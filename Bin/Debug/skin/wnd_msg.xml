@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Window caption="0,0,0,120" size="320,136">
+  <Font name="微软雅黑" size="12" default="true" id="0"/>
+  <VerticalLayout  bkcolor="#FFFFFFFF" bordersize="1" bordercolor="#FFE1E1E1" inset="1,1,1,1">
+    <HorizontalLayout height="90">
+        <Control width="30" />
+        <VerticalLayout width="70">
+            <Control height="20" />
+            <Label name="ctrl_icon" flaot="true" pos="52,65,122,135"/>
+        </VerticalLayout>
+        <Control width="12" />
+        <Text name="text_info" width="162" height="80" padding="0,40,0,0"/>
+        <Control width="15" />
+        <Button name="btn_close"  width="31" height="29" normalimage="file='public/btn_close2.png' source='0,0,31,29' " hotimage="file='public/btn_close2.png' source='0,29,31,58'" pushedimage="file='public/btn_close2.png' source='0,58,31,87'" cursor="hand"/>
+    </HorizontalLayout>
+    <HorizontalLayout bkcolor="#fff3f7fb" height="46" >
+        <Button name="btn_ok" text="确定" font="0" textcolor="ffffffff" visible="true" float="true" pos="240,8,310,40" normalimage="file='public/B03.png' source='0,0,70,32' corner='2,2,2,2'" hotimage="file='public/B03.png' source='0,32,70,64' corner='2,2,2,2'" selectedimage="file='public/B03.png' source='0,64,70,96' corner='2,2,2,2'" cursor="hand"/>
+        <Button name="btn_cancel" text="取消" font="0" textcolor="ff333333" pushedtextcolor="ffc1c3c7" visible="true" float="true" pos="320,8,390,40" normalimage="file='public/B01.png' source='0,0,70,32' corner='2,2,2,2'" hotimage="file='public/B01.png' source='0,32,70,64' corner='2,2,2,2'" selectedimage="file='public/B01.png' source='0,64,70,96' corner='2,2,2,2'" cursor="hand"/>
+    </HorizontalLayout>
+  </VerticalLayout>
+</Window>

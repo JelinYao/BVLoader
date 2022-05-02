@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window>
+	<ListContainerElement height="77">
+		<Option name="opt_select_loading" float="true" pos="30,31,0,0" width="14" height="14" normalimage="file='public/B08.png' source='0,0,14,14'" selectedimage="file='public/B08.png' source='0,28,14,42' " hotimage="file='public/B08.png' source='0,14,14,28'" />
+		<Label name="lbl_icon" float="true" pos="64,13,0,0" width="50" height="50" bkimage="public\def_app.png"/>
+		<Label name="lbl_mask" float="true" pos="64,13,0,0" width="50" height="50" bkimage="file='public\app_mask.png' source='0,0,50,50'"/>
+		<Label name="lbl_name" float="true" pos="134,31,0,0" width="96" height="15" align="left" valign="center" textcolor="#FF333333" endellipsis="true" />
+		<Progress name="progress" float="true" pos="260,26,0,0" width="198" height="6" min="0" max="100" bkimage="pro_bk.png" foreimage="pro_load.png" isstretchfore="false" />
+		
+		<Label name="lbl_state" float="true" pos="260,40,0,0" width="180" height="15" align="left" valign="center" textcolor="#FF999999" endellipsis="true" />
+		<Label name="lbl_size" float="true" pos="340,40,458,55" textcolor="#FF999999" align="right" endellipsis="true" />
+
+		<Button name="btn_start_loading" tooltip="下载" pos="518,30,0,0" float="true" visible="false" width="16" height="16" normalimage="file='reload.png' source='0,0,16,16'" hotimage="file='reload.png' source='0,16,16,32'" pushedimage="file='reload.png' source='0,32,16,48'" disabledimage="file='reload.png' source='0,48,16,64'" cursor="hand"/>
+		
+		<Button name="btn_stop_loading" tooltip="暂停" pos="518,30,0,0" float="true" visible="false" width="16" height="16" normalimage="file='pause.png' source='0,0,16,16' " hotimage="file='pause.png' source='0,16,16,32' " pushedimage="file='pause.png' source='0,32,16,48'" disabledimage="file='pause.png' source='0,48,16,64'" cursor="hand" />
+
+		<Button name="btn_delete_loading" tooltip="删除" pos="554,30,0,0" float="true" width="16" height="16" normalimage="file='delete.png' source='0,0,16,16'" hotimage="file='delete.png' source='0,16,16,32'" pushedimage="file='delete.png' source='0,32,16,48'" disabledimage="file='delete.png' source='0,48,16,64'"  cursor="hand"/>
+		<Control float="true" pos="0,76,0,0" width="840" height="1" bkcolor="#FFF0F3F5"/>
+	</ListContainerElement>
+</Window>

@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="wnd">
+      <UniqueIdentifier>{d7dc0d7f-5402-4d86-9154-963510e13ba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service">
+      <UniqueIdentifier>{d3145607-9a86-43db-a7b0-511b014a36c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service\async">
+      <UniqueIdentifier>{d9957e02-1b3d-4d5b-afdd-b8ab62742e1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="define">
+      <UniqueIdentifier>{30d49e88-10cd-4879-b228-7a9a2a12c6ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service\download">
+      <UniqueIdentifier>{9ba1d8e1-517d-4da0-88ae-03f51cec202a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service\audio">
+      <UniqueIdentifier>{b85e184d-89cf-44bf-a45a-f56469144887}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="url_parse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="wnd\wnd_base.h">
+      <Filter>wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="wnd\wnd_main.h">
+      <Filter>wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="wnd\wnd_parse.h">
+      <Filter>wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="service\async\async_service.h">
+      <Filter>service\async</Filter>
+    </ClInclude>
+    <ClInclude Include="service\async\async_service_delegate.h">
+      <Filter>service\async</Filter>
+    </ClInclude>
+    <ClInclude Include="service\async\async_task.h">
+      <Filter>service\async</Filter>
+    </ClInclude>
+    <ClInclude Include="service\service_manager.h">
+      <Filter>service</Filter>
+    </ClInclude>
+    <ClInclude Include="define\common_define.h">
+      <Filter>define</Filter>
+    </ClInclude>
+    <ClInclude Include="define\message_define.h">
+      <Filter>define</Filter>
+    </ClInclude>
+    <ClInclude Include="define\soft_define.h">
+      <Filter>define</Filter>
+    </ClInclude>
+    <ClInclude Include="service\async\async_service_define.h">
+      <Filter>service\async</Filter>
+    </ClInclude>
+    <ClInclude Include="service\download\download_service.h">
+      <Filter>service\download</Filter>
+    </ClInclude>
+    <ClInclude Include="service\service.h">
+      <Filter>service</Filter>
+    </ClInclude>
+    <ClInclude Include="service\download\task.h">
+      <Filter>service\download</Filter>
+    </ClInclude>
+    <ClInclude Include="service\download\task_manager.h">
+      <Filter>service\download</Filter>
+    </ClInclude>
+    <ClInclude Include="service\download\download_service_delegate.h">
+      <Filter>service\download</Filter>
+    </ClInclude>
+    <ClInclude Include="service\download\download_service_define.h">
+      <Filter>service\download</Filter>
+    </ClInclude>
+    <ClInclude Include="service\download\http_cache.h">
+      <Filter>service\download</Filter>
+    </ClInclude>
+    <ClInclude Include="wnd\wnd_msg.h">
+      <Filter>wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="service\audio\audio_service.h">
+      <Filter>service\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="service\audio\audio_service_delegate.h">
+      <Filter>service\audio</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="url_parse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="wnd\wnd_base.cpp">
+      <Filter>wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="wnd\wnd_main.cpp">
+      <Filter>wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="wnd\wnd_parse.cpp">
+      <Filter>wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="service\async\async_service.cpp">
+      <Filter>service\async</Filter>
+    </ClCompile>
+    <ClCompile Include="service\service_manager.cpp">
+      <Filter>service</Filter>
+    </ClCompile>
+    <ClCompile Include="service\download\download_service.cpp">
+      <Filter>service\download</Filter>
+    </ClCompile>
+    <ClCompile Include="service\download\task_manager.cpp">
+      <Filter>service\download</Filter>
+    </ClCompile>
+    <ClCompile Include="wnd\wnd_msg.cpp">
+      <Filter>wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="service\audio\audio_service.cpp">
+      <Filter>service\audio</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="VideoLoader.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="VideoLoader.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="service\download\download_service.inl">
+      <Filter>service\download</Filter>
+    </None>
+    <None Include="res\skin.zip" />
+  </ItemGroup>
+</Project>

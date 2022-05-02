@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window>
+	<ListContainerElement height="77">
+		<Option name="opt_select" float="true" pos="30,31,0,0" width="14" height="14" normalimage="file='public/B08.png' source='0,0,14,14' dest='0,0,14,14'" selectedimage="file='public/B08.png' source='0,28,14,42' dest='0,0,14,14'" hotimage="file='public/B08.png' source='0,14,14,28' dest='0,0,14,14'" />
+		<Label name="lbl_icon" float="true" pos="64,13,0,0" width="50" height="50" bkimage="public\def_app.png" />
+		<Label name="lbl_mask" float="true" pos="64,13,0,0" width="50" height="50" bkimage="file='public\app_mask.png' source='0,0,50,50'"/>
+		<Label name="lbl_name" float="true" pos="134,31,0,0" width="80" height="15" align="left" valign="center" textcolor="#FF333333" endellipsis="true"/>
+		<Label name="lbl_size" float="true" pos="250,31,0,0" width="80" height="15" align="left" valign="center" textcolor="#FF333333" endellipsis="true" />
+		<Label name="lbl_date" float="true" pos="350,31,0,0" width="100" height="15" align="left" valign="center" textcolor="#FF333333" endellipsis="true" />
+
+	<!-- 	<Button name="btn_insted" text="已安装" pos="464,22,0,0" float="true" visible="true" width="70" height="32" normalimage="file='public/B01.png' source='0,0,70,32' dest='0,0,70,32'" hotimage="file='public/B01.png' source='0,32,70,64' dest='0,0,70,32'" pushedimage="file='public/B01.png' source='0,64,70,96' dest='0,0,70,32'" disabledimage="file='public/B01.png' source='0,96,70,128' dest='0,0,70,32'"/> -->
+		
+		<Button name="btn_reinst" text="重装" pos="464,22,0,0" float="true" visible="true" width="70" height="32" textcolor="#FF666666" hottextcolor="#FF0086F7" pushedtextcolor="#FF0086F7" normalimage="file='public/B01.png' source='0,0,70,32' dest='0,0,70,32'" hotimage="file='public/B01.png' source='0,32,70,64' dest='0,0,70,32'" pushedimage="file='public/B01.png' source='0,64,70,96' dest='0,0,70,32'" disabledimage="file='public/B01.png' source='0,96,70,128' dest='0,0,70,32'"/>
+
+		<Button name="btn_delete" tooltip="删除" pos="554,30,0,0" float="true" width="16" height="16" normalimage="file='DownloadWnd/delete.png' source='0,0,16,16' dest='0,0,16,16'" hotimage="file='DownloadWnd/delete.png' source='0,16,16,32' dest='0,0,16,16'" pushedimage="file='DownloadWnd/delete.png' source='0,32,16,48' dest='0,0,16,16'" disabledimage="file='DownloadWnd/delete.png' source='0,48,16,64' dest='0,0,16,16'" />
+		<Control float="true" pos="0,76,0,0" width="840" height="1" bkcolor="#FFF0F3F5"/>
+	</ListContainerElement>
+</Window>

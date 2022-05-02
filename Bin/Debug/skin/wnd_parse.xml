@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window size="400,232" caption="0,0,0,40">
+    <Font name="微软雅黑" size="12" bold="false" id="0"/>
+    <Font name="微软雅黑" size="14" bold="false" id="1"/>
+    <Font name="微软雅黑" size="16" bold="false" id="2"/>
+
+<VerticalLayout bkcolor="#FFFFFFFF" bordersize="1" bordercolor="#FFE1E1E1" inset="1,1,1,1">
+    <HorizontalLayout height="40" bkimage="bk_title.png">
+        <Label text="视频信息" float="true" pos="20,10,0,0" width="100" textcolor="#FFFFFFFF" height="16" font="1" align="left" valign="center"/>
+        <Button name="btn_close" float="true" pos="369,0,0,0" width="31" height="29" normalimage="file='close.png' source='0,0,31,29' " hotimage="file='close.png' source='0,29,31,58'" pushedimage="close.png' source='0,58,31,87'"/>
+    </HorizontalLayout>
+    <HorizontalLayout>
+    <TabLayout name="main" selectedid="0">
+        <VerticalLayout>
+            <Control height="36" />
+            <HorizontalLayout height="26">
+                <Control width="16"/>
+                <Edit name="edit" deftext="请输入视频链接" deftextcolor="#FF666666" width="280" bkcolor="#FFFFFFFF" textcolor="#FF333333" font="0" bordersize="1" bordercolor="#FFB9BEC1" textpadding="3,3,3,3"/>
+                <Control width="10"/>
+                <Button name="btn_parse" text="解析" width="72" normalimage="blue_nor.png" hotimage="blue_hot.png" pushedimage="blue_down.png" textcolor="#FFFFFFFFF" font="0"/>
+            </HorizontalLayout>
+        </VerticalLayout>
+        <VerticalLayout>
+            <Control height="52" />
+            <Label text="正在获取视频信息" height="20" textcolor="#FF999999" height="16" font="1" align="center" valign="center"/>
+            <Control height="16" />
+            <HorizontalLayout height="9">
+                <Control />
+                <GifAnim width="200" bkimage="loading.gif"/>
+                <Control />
+            </HorizontalLayout>
+        </VerticalLayout>
+        <VerticalLayout>
+            <Control height="16" />
+            <Label name="label_title" textcolor="#FF333333" height="16" font="0" align="left" valign="center" endellipsis="true" textpadding="10,0,10,0"/>
+            <Control height="10" />
+            <HorizontalLayout>
+                <Control width="10" />
+                <VerticalLayout>
+                    <Label name="label_author" textcolor="#FF333333" height="16" font="0" align="left" valign="center" endellipsis="true" />
+                    <Control height="10" />
+                    <Label name="label_date" textcolor="#FF333333" height="16" font="0" align="left" valign="center" />
+                    <Control height="10" />
+                    <Label name="label_duration" textcolor="#FF333333" height="16" font="0" align="left" valign="center" />
+                    <Control height="10" />
+                    <HorizontalLayout height="27">
+                        <Label text="画质：" width="36" textcolor="#FF333333" font="0" align="left" valign="center" />
+                        <Combo name="combo_qn" width="116" textpadding="15,0,15,0" bordersize="1" bordercolor="#FFd4d8df" bkimage="file='down.png' dest='102,10,111,16'" itemtextpadding="14,0,0,0" itemtextcolor="#FF333333" itemhotbkcolor="#FFF0F3F5" itemhottextcolor="#FF0086F7" itemselectedbkcolor="#FFFFFFFF" />
+                    </HorizontalLayout>
+                    
+                </VerticalLayout>
+                <Control width="10" />
+                <VerticalLayout width="140">
+                    <Control name="ctrl_cover" height="104" bkimage="cover.jpg"/>
+                </VerticalLayout>
+                <Control width="10" />
+            </HorizontalLayout>
+            <Control height="8" />
+            <HorizontalLayout height="28">
+                <Control />
+                <Button name="btn_download" text="立即下载" width="92" normalimage="blue_nor.png" hotimage="blue_hot.png" pushedimage="blue_down.png" textcolor="#FFFFFFFFF" disabledtextcolor="#FFE1E1E1" font="0" cursor="hand"/>
+                <Control />
+            </HorizontalLayout>
+            <Control height="2" />
+        </VerticalLayout>
+    </TabLayout>
+    </HorizontalLayout>
+</VerticalLayout>

@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="restclient">
+      <UniqueIdentifier>{ebd73500-d1a2-46d2-84be-4c0a18315d90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qrcode">
+      <UniqueIdentifier>{71b023b4-a5c8-44ce-a32b-702c756f8b33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jsoncpp">
+      <UniqueIdentifier>{9494522c-add8-4f98-935c-039fa4dddfac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jsoncpp\json">
+      <UniqueIdentifier>{e37da153-b5f2-44de-b9ff-2a12c34d98ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="string">
+      <UniqueIdentifier>{cba374a6-ef39-4a7d-895b-8d10831f0b3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log">
+      <UniqueIdentifier>{aee4967b-4acf-467e-b9e1-7e62b2f3f143}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system">
+      <UniqueIdentifier>{52d814ae-f320-4fd2-aa08-b3c926c64992}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="httplib">
+      <UniqueIdentifier>{2c21db54-fa12-4ea9-8fa4-f05e37a0b368}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\json\json.h">
+      <Filter>jsoncpp\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\json\json-forwards.h">
+      <Filter>jsoncpp\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\restclient\connection.h">
+      <Filter>restclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\restclient\helpers.h">
+      <Filter>restclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\restclient\restclient.h">
+      <Filter>restclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\string_utils.h">
+      <Filter>string</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\qrencode.h">
+      <Filter>qrcode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\easylogging++.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\system_utils.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\HttpLib.h">
+      <Filter>httplib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\SE.h">
+      <Filter>httplib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\ThreadMgr.h">
+      <Filter>httplib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="restclient\connection.cc">
+      <Filter>restclient</Filter>
+    </ClCompile>
+    <ClCompile Include="restclient\helpers.cc">
+      <Filter>restclient</Filter>
+    </ClCompile>
+    <ClCompile Include="restclient\restclient.cc">
+      <Filter>restclient</Filter>
+    </ClCompile>
+    <ClCompile Include="qrcode\qrencode.cpp">
+      <Filter>qrcode</Filter>
+    </ClCompile>
+    <ClCompile Include="jsoncpp\jsoncpp.cpp">
+      <Filter>jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="string\string_utils.cpp">
+      <Filter>string</Filter>
+    </ClCompile>
+    <ClCompile Include="log\easylogging++.cc">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="system\system_utils.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="httplib\HttpLib.cpp">
+      <Filter>httplib</Filter>
+    </ClCompile>
+    <ClCompile Include="httplib\SE.cpp">
+      <Filter>httplib</Filter>
+    </ClCompile>
+    <ClCompile Include="httplib\ThreadMgr.cpp">
+      <Filter>httplib</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

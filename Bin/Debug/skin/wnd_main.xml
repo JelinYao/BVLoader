@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window size="700,500" caption="0,0,0,40">
+    <Font name="微软雅黑" size="12" bold="false" id="0"/>
+    <Font name="微软雅黑" size="12" bold="true" id="1"/>
+    <Font name="微软雅黑" size="14" bold="false" id="2"/>
+    <Font name="微软雅黑" size="14" bold="true" id="3"/>
+    <Default name="VScrollBar" value="showbutton1=&quot;false&quot; showbutton2=&quot;false&quot; thumbnormalimage=&quot;file=&apos;public/scroll.png&apos; source=&apos;0,0,6,7&apos; corner=&apos;2,2,2,2&apos;&quot;  railnormalimage=&quot;file=&apos;public/scroll.png&apos; source=&apos;0,0,6,7&apos; corner=&apos;2,2,2,2&apos;&quot; bknormalimage=&quot;file=&apos;public/scroll.png&apos; source=&apos;0,7,6,14&apos; corner=&apos;2,2,2,2&apos;&quot; width=&quot;6&quot; "/>
+    
+    <VerticalLayout bkcolor="#FFFFFFFF" bordersize="1" bordercolor="#FFE1E1E1" inset="1,1,1,1">
+        <HorizontalLayout height="40" bkimage="bk_title.png">
+            <Label text="下载中心" float="true" pos="20,10,0,0" width="100" textcolor="#FFFFFFFF" height="16" font="2" align="left" valign="center"/>
+            <Button name="btn_download" float="true" pos="600,0,0,0" width="32" height="32" bkimage="download.png"/>
+            <Button name="btn_close" float="true" pos="669,0,0,0" width="31" height="29" normalimage="file='close.png' source='0,0,31,29' " hotimage="file='close.png' source='0,29,31,58'" pushedimage="close.png' source='0,58,31,87'"/>
+        </HorizontalLayout>
+        <HorizontalLayout >
+            <VerticalLayout width="100" bkcolor="#FFF3F7FB">
+                <Option name="opt_loading" bkcolor="#FFF3F7FB" textcolor="#FF333333" selectedtextcolor="#FF0086F7" font="0" text="进行中" height="44" group="1" selected="true" selectedbkcolor="#FFFFFFFF" />
+                <Option name="opt_finish" bkcolor="#FFF3F7FB" textcolor="#FF333333" selectedtextcolor="#FF0086F7" font="0" text="已完成" height="44" group="1" selectedbkcolor="#FFFFFFFF" />
+            </VerticalLayout>
+            <VerticalLayout>
+            <HorizontalLayout>
+                <TabLayout name="tab_main">
+                    <VerticalLayout>
+                        <HorizontalLayout height="44" bkcolor="#FFFFFFFF" >
+                            <Option name="checkbox_ing" float="true" pos="30,15,0,0" width="14" height="14" normalimage="file='public/B08.png' source='0,0,14,14' dest='0,0,14,14'" selectedimage="file='public/B08.png' source='0,28,14,42' dest='0,0,14,14'" hotimage="file='public/B08.png' source='0,14,14,28' dest='0,0,14,14'" enabled="false"/>
+                            <Button name="btn_loading_start_select" text="继续" textpadding="23,0,0,0" textcolor="#FF666666" hottextcolor="#FF0086F7" font="0" align="left" valign="center" float="true" pos="64,15,0,0" width="50" height="15" normalimage="file='public/reload.png' source='0,0,15,15' dest='0,0,15,15'" hotimage="file='public/reload.png' source='0,15,15,30' dest='0,0,15,15'" pushedimage="file='public/reload.png' source='0,30,15,45' dest='0,0,15,15'" disabledimage="file='public/reload.png' source='0,45,15,60' dest='0,0,15,15'" enabled="false"/>
+                            <Button name="btn_loading_pause_select" text="暂停" textpadding="23,0,0,0" textcolor="#FF666666" hottextcolor="#FF0086F7" font="0" align="left" valign="center" float="true" pos="140,15,0,0" width="50" height="15" normalimage="file='public/pause.png' source='0,0,15,15' dest='0,0,15,15'" hotimage="file='public/pause.png' source='0,15,15,30' dest='0,0,15,15'" pushedimage="file='public/pause.png' source='0,30,15,45' dest='0,0,15,15'" disabledimage="file='public/pause.png' source='0,45,15,60' dest='0,0,15,15'" enabled="false"/>
+                            <Button name="btn_loading_delete_select" text="删除" textpadding="23,0,0,0" textcolor="#FF666666" hottextcolor="#FF0086F7" font="0" align="left" valign="center" float="true" pos="218,15,0,0" width="50" height="15" normalimage="file='public/delete.png' source='0,0,15,15' dest='0,0,15,15'" hotimage="file='public/delete.png' source='0,15,15,30' dest='0,0,15,15'" pushedimage="file='public/delete.png' source='0,30,15,45' dest='0,0,15,15'" disabledimage="file='public/delete.png' source='0,45,15,60' dest='0,0,15,15'" enabled="false"/>
+                        </HorizontalLayout>
+                        <Control height="1" bkcolor="#FFE3E6EB" />
+                        <List name="list_loading" padding="0,0,0,1" header="hidden" itembkcolor="#FFFFFFFF" itemselectedbkcolor="#FFFFF9DE" itemhotbkcolor="#FFFFFCED" menu="true" vscrollbar="true" />
+                    </VerticalLayout>
+                    <VerticalLayout>
+                        <HorizontalLayout height="44" bkcolor="#FFFFFFFF">
+                            <Option name="checkbox_done" float="true" pos="30,15,0,0" width="14" height="14" normalimage="file='public/B08.png' source='0,0,14,14' dest='0,0,14,14'" selectedimage="file='public/B08.png' source='0,28,14,42' dest='0,0,14,14'" hotimage="file='public/B08.png' source='0,14,14,28' dest='0,0,14,14'" enabled="false"/>
+                            <Button name="btn_done_delete" text="删除" textpadding="23,0,0,0" textcolor="#FF666666" hottextcolor="#FF0086F7" font="0" align="left" valign="center" float="true" pos="64,15,0,0" width="50" height="15" normalimage="file='public/delete.png' source='0,0,15,15' dest='0,0,15,15'" hotimage="file='public/delete.png' source='0,15,15,30' dest='0,0,15,15'" pushedimage="file='public/delete.png' source='0,30,15,45' dest='0,0,15,15'" disabledimage="file='public/delete.png' source='0,45,15,60' dest='0,0,15,15'" enabled="false"/>
+                            <Button name="btn_done_clear" text="清空" textpadding="23,0,0,0" textcolor="#FF666666" hottextcolor="#FF0086F7" font="0" align="left" valign="center" float="true" pos="141,15,0,0" width="50" height="15" normalimage="file='public/clear.png' source='0,0,15,15' dest='0,0,15,15'" hotimage="file='public/clear.png' source='0,15,15,30' dest='0,0,15,15'" pushedimage="file='public/clear.png' source='0,30,15,45' dest='0,0,15,15'" disabledimage="file='public/clear.png' source='0,45,15,60' dest='0,0,15,15'" enabled="false"/>
+                            <Button name="btn_open_dir" text="查看下载目录" textcolor="#FF666666" hottextcolor="#FF0086F7" font="0" align="right" valign="center" float="true" pos="480,15,0,0" width="100" height="15" visible="false"/>
+                        </HorizontalLayout>
+                        <Control height="1" bkcolor="#FFE3E6EB" />
+                        <List name="list_finish" padding="0,0,0,1" header="hidden" itembkcolor="#FFFFFFFF" itemselectedbkcolor="#FFFFF9DE" itemhotbkcolor="#FFFFFCED" menu="true" itemshowhtml="true" vscrollbar="true" hscrollbar="true" />
+                    </VerticalLayout>
+                </TabLayout>
+            </HorizontalLayout>
+            </VerticalLayout>
+        </HorizontalLayout>
+    </VerticalLayout>
+
+</Window>
