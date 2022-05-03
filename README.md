@@ -9,11 +9,11 @@ Bilibili官网 - https://www.bilibili.com/
 
 使用的开源库有:  
 duilib: https://github.com/qdtroy/DuiLib_Ultimate  
-easylogging: https://github.com/amraynonweb/  
+easylogging: https://github.com/amraynonweb/easyloggingpp    
 libcurl: https://github.com/curl/curl  
 openssl: https://github.com/openssl/openssl  
 zlib: http://www.zlib.net/  
-ffmpeg: https://github.com/FFmpeg/FFmpeg  
+ffmpeg: http://ffmpeg.org/   
 mp3lame: https://lame.sourceforge.io/  
 jsoncpp: https://github.com/open-source-parsers/jsoncpp  
 restclient: https://github.com/mrtazz/restclient-cpp  
