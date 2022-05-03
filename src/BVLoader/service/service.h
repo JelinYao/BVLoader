@@ -8,6 +8,7 @@ public:
     virtual void Exit() = 0;
 };
 
+// 异步服务对外能力接口
 class IAsyncServiceDelegate;
 class IAsyncService 
     : public IService {
@@ -17,6 +18,7 @@ public:
     virtual void AddDecodeTask(UINT_PTR task_id, std_cwstr_ref video_path, std_cwstr_ref mp3_path) = 0;
 };
 
+// 下载服务对外能力接口
 namespace download {
     class IDownloadServiceDelegate;
 }
@@ -29,9 +31,13 @@ public:
     virtual bool StopTask(UINT_PTR task_id) = 0;
     virtual bool ReloadTask(UINT_PTR task_id) = 0;
     virtual bool DeleteLoadingTask(UINT_PTR task_id) = 0;
-    virtual std::shared_ptr<download::Task> FindTask(UINT_PTR task_id) = 0;
+    virtual bool DeleteFinishTask(UINT_PTR task_id) = 0;
+    virtual std::shared_ptr<download::Task> FindLoadingTask(UINT_PTR task_id) = 0;
+    virtual std::shared_ptr<download::Task> FindFinishTask(UINT_PTR task_id) = 0;
+    virtual bool AddFinishTask(UINT_PTR task_id) = 0;
 };
 
+// 解码服务对外能力接口
 class IAudioServiceDelegate;
 class IAudioService
     : public IService {

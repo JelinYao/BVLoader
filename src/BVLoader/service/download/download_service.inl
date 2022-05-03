@@ -13,12 +13,20 @@ namespace download {
         }
     }
 
-    inline std::shared_ptr<download::Task> DownloadService::FindTask(UINT_PTR task_id)
+    inline std::shared_ptr<download::Task> DownloadService::FindLoadingTask(UINT_PTR task_id)
     {
         Task* task_ptr = reinterpret_cast<Task*>(task_id);
-        auto task = task_mgr_->FindLoadingTask(task_ptr);
-        if (task) {
-            return task;
+        if (task_ptr == nullptr) {
+            return nullptr;
+        }
+        return task_mgr_->FindLoadingTask(task_ptr);
+    }
+
+    inline std::shared_ptr<download::Task> DownloadService::FindFinishTask(UINT_PTR task_id)
+    {
+        Task* task_ptr = reinterpret_cast<Task*>(task_id);
+        if (task_ptr == nullptr) {
+            return nullptr;
         }
         return task_mgr_->FindFinishTask(task_ptr);
     }

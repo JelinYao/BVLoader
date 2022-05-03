@@ -43,25 +43,26 @@ protected:
         DECLARE_CTRL_TYPE(list_finish_, CListUI, L"list_finish")
     END_INIT_CTRL
     BEGIN_BIND_CTRL
-        BIND_CTRL(L"btn_close", &WndMain::OnNotifyClose)
-        BIND_CTRL(L"btn_download", &WndMain::OnNotifyDownload)
     END_BIND_CTRL
-    bool OnNotifyClose(void* param);
-    bool OnNotifyDownload(void* param);
+
     void Notify(TNotifyUI& msg) override;
     void OnClick(TNotifyUI& msg) override;
 
     bool AddLoadingItem(const shared_ptr<download::Task>& task);
+    bool AddFinishItem(const shared_ptr<download::Task>& task);
+
     bool OnNotifySelectLoadingListItem(void* param);
     void OnClickStartLoading(CControlUI* sender);
     void OnClickStopLoading(CControlUI* sender);
     void OnClickDeleteLoading(CControlUI* sender);
+    void OnClickFinishLoading(CControlUI* sender);
     bool OnNotifyListItem(void* param);
 
     UINT ShowMsgBox(MessageIconType icon, LPCWSTR info);
     LRESULT OnMsgMsgbox(WPARAM wParam, LPARAM lParam);
-    LRESULT OnWparamDeleteLoadingItem(LPARAM lParam);
+    LRESULT OnWparamDeleteItem(LPARAM lParam);
     LRESULT OnMsgDecode(WPARAM wParam, LPARAM lParam);
+    LRESULT OnMsgNotifyStatus(WPARAM wParam, LPARAM lParam);
 
 private:
     bool need_exit_ = false;

@@ -1,11 +1,11 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ 生成的包含文件。
-// 供 VideoLoader.rc 使用
+// 供 BVLoader.rc 使用
 //
 #define IDC_MYICON                      2
 #define IDD_VIDEOLOADER_DIALOG          102
 #define IDM_ABOUT                       104
-#define IDI_VIDEOLOADER                 107
+#define IDI_BVLOADER                 107
 #define IDI_SMALL                       108
 #define IDR_MAINFRAME                   128
 #define IDR_DAT1                        129

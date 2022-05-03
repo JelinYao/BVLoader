@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{8f011e58-ee97-4a49-95b6-f6a33d4759c0}</ProjectGuid>
-    <RootNamespace>VideoLoader</RootNamespace>
+    <RootNamespace>BVLoader</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>BVLoader</ProjectName>
   </PropertyGroup>
@@ -199,18 +199,15 @@
     <ClCompile Include="wnd\wnd_parse.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="VideoLoader.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico" />
-    <Image Include="VideoLoader.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="readme.txt" />
+    <ResourceCompile Include="BVLoader.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\skin.zip" />
     <None Include="service\download\download_service.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\BVLoader.ico" />
+    <Image Include="res\small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

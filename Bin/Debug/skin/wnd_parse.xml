@@ -15,7 +15,7 @@
             <Control height="36" />
             <HorizontalLayout height="26">
                 <Control width="16"/>
-                <Edit name="edit" deftext="请输入视频链接" deftextcolor="#FF666666" width="280" bkcolor="#FFFFFFFF" textcolor="#FF333333" font="0" bordersize="1" bordercolor="#FFB9BEC1" textpadding="3,3,3,3"/>
+                <Edit name="edit" tipvalue="请输入视频链接" tipvaluecolor="#FF999999" width="280" bkcolor="#FFFFFFFF" textcolor="#FF333333" font="0" bordersize="1" bordercolor="#FFB9BEC1" textpadding="3,3,3,3"/>
                 <Control width="10"/>
                 <Button name="btn_parse" text="解析" width="72" normalimage="blue_nor.png" hotimage="blue_hot.png" pushedimage="blue_down.png" textcolor="#FFFFFFFFF" font="0"/>
             </HorizontalLayout>
@@ -51,7 +51,7 @@
                 </VerticalLayout>
                 <Control width="10" />
                 <VerticalLayout width="140">
-                    <Control name="ctrl_cover" height="104" bkimage="cover.jpg"/>
+                    <Control name="ctrl_cover" height="104" bkimage="cover.png"/>
                 </VerticalLayout>
                 <Control width="10" />
             </HorizontalLayout>

@@ -54,7 +54,7 @@ LRESULT WndBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
     LONG styleValue = ::GetWindowLong(m_hWnd, GWL_STYLE);
     styleValue &= ~WS_CAPTION;
     ::SetWindowLong(m_hWnd, GWL_STYLE, styleValue);
-    SetIcon(IDI_VIDEOLOADER);
+    SetIcon(IDI_BVLOADER);
     m_pm.Init(m_hWnd);
     CDialogBuilder builder;
     CDuiString strXmlPath = GetXmlPath();

@@ -210,6 +210,9 @@ void WndParse::OnTaskGetSelectPlayerUrl(LPARAM lParam)
     combobox_->RemoveAll();
     auto service = DOWNLOAD_SERVICE();
     service->AddTask(info->url, video_info_->title, image_path_, video_info_->author, video_info_->duration, video_info_->ctime);
+    url_edit_->SetText(L"");
+    cover_->SetBkImage(kDefaultCover);
+    ShowWindow(false, false);
 }
 
 void WndParse::OnTaskDownloadCover(LPARAM lParam)

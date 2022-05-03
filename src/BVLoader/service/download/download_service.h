@@ -21,7 +21,10 @@ namespace download {
         bool StopTask(UINT_PTR task_id) override;
         bool ReloadTask(UINT_PTR task_id) override;
         bool DeleteLoadingTask(UINT_PTR task_id) override;
-        std::shared_ptr<download::Task> FindTask(UINT_PTR task_id) override;
+        bool DeleteFinishTask(UINT_PTR task_id) override;
+        std::shared_ptr<download::Task> FindLoadingTask(UINT_PTR task_id) override;
+        std::shared_ptr<download::Task> FindFinishTask(UINT_PTR task_id) override;
+        bool AddFinishTask(UINT_PTR task_id) override;
 
     protected:
         bool Init() override;

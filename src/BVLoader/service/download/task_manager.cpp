@@ -38,6 +38,26 @@ namespace download {
         return nullptr;
     }
 
+    void TaskManager::AddFinishTask(const std::shared_ptr<Task>& task)
+    {
+        auto iter = std::find(loading_list_.begin(), loading_list_.end(), task);
+        if (iter == loading_list_.end()) {
+            return;
+        }
+        finish_list.emplace_back(task);
+        loading_list_.erase(iter);
+    }
+
+    void TaskManager::AddFinishTask(std::shared_ptr<Task>&& task)
+    {
+        auto iter = std::find(loading_list_.begin(), loading_list_.end(), task);
+        if (iter == loading_list_.end()) {
+            return;
+        }
+        finish_list.emplace_back(std::move(task));
+        loading_list_.erase(iter);
+    }
+
     std::shared_ptr<download::Task> TaskManager::FindFinishTask(Task* task_ptr)
     {
         for (auto& task : finish_list) {
@@ -91,6 +111,17 @@ namespace download {
         }
         auto temp_task = *iter;
         loading_list_.erase(iter);
+        free_list_.emplace_back(std::move(temp_task));
+    }
+
+    void TaskManager::DeleteFinishTask(const std::shared_ptr<Task>& task)
+    {
+        auto iter = std::find(finish_list.begin(), finish_list.end(), task);
+        if (iter == finish_list.end()) {
+            return;
+        }
+        auto temp_task = *iter;
+        finish_list.erase(iter);
         free_list_.emplace_back(std::move(temp_task));
     }
 

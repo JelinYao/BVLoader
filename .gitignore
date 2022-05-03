@@ -24,9 +24,18 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
 *.out
 *.app
+
+*.dy
+*.pdb
+*.log
+*.tlog
+*.idb
+*.aps
+*.iobj
+/.vs
+/Temp

@@ -204,7 +204,7 @@ namespace download {
         if (task_mgr_->GetLoadingCount() < max_loading_count_) {
             task->http = std::make_shared<httplib::CHttpDownload>();
             if (!task->http->Initialize(task->url, task->save_path)) {
-                LOG(ERROR) << "初始化下载库失败";
+                LOG(ERROR) << "StartTask 初始化下载库失败";
                 task->status = DownloadStatus::STATUS_FAILED;
                 task->http = nullptr;
                 NotifyStatus(task);
@@ -256,7 +256,7 @@ namespace download {
         auto task = task_mgr_->NewTask(url, title, img, author, duration, ctime);
         auto name = string_utils::GetFileNameByUrl(url);
         if (name.empty()) {
-            LOG(ERROR) << "获取下载文件名失败，url: " << url;
+            LOG(ERROR) << "AddTask 获取下载文件名失败，url: " << url;
             task_mgr_->FreeTask(std::move(task));
             return nullptr;
         }
@@ -274,11 +274,11 @@ namespace download {
         Task* task_ptr = reinterpret_cast<Task*>(task_id);
         auto task = task_mgr_->FindLoadingTask(task_ptr);
         if (!task) {
-            LOG(ERROR) << "任务不存在";
+            LOG(ERROR) << "StopTask 任务不存在";
             return false;
         }
         if (task->status != DownloadStatus::STATUS_LOADING) {
-            LOG(ERROR) << "任务状态不正确，status: " << (int)task->status;
+            LOG(ERROR) << "StopTask 任务状态不正确，status: " << (int)task->status;
             return false;
         }
         ClearTaskHttp(task);
@@ -292,12 +292,12 @@ namespace download {
         Task* task_ptr = reinterpret_cast<Task*>(task_id);
         auto task = task_mgr_->FindLoadingTask(task_ptr);
         if (!task) {
-            LOG(ERROR) << "任务不存在";
+            LOG(ERROR) << "ReloadTask 任务不存在";
             return false;
         }
         if (task->status != DownloadStatus::STATUS_PAUSE 
             && task->status != DownloadStatus::STATUS_FAILED) {
-            LOG(ERROR) << "任务状态不正确，status: " << (int)task->status;
+            LOG(ERROR) << "ReloadTask 任务状态不正确，status: " << (int)task->status;
             return false;
         }
         StartTask(task);
@@ -309,12 +309,38 @@ namespace download {
         Task* task_ptr = reinterpret_cast<Task*>(task_id);
         auto task = task_mgr_->FindLoadingTask(task_ptr);
         if (!task) {
-            LOG(ERROR) << "任务不存在";
+            LOG(ERROR) << "DeleteLoadingTask 任务不存在";
             return false;
         }
         ClearTaskHttp(task);
         task->Clear();
         task_mgr_->DeleteLoadingTask(task);
+        return true;
+    }
+
+    bool DownloadService::DeleteFinishTask(UINT_PTR task_id)
+    {
+        Task* task_ptr = reinterpret_cast<Task*>(task_id);
+        auto task = task_mgr_->FindFinishTask(task_ptr);
+        if (!task) {
+            LOG(ERROR) << "DeleteFinishTask 任务不存在";
+            return false;
+        }
+        ClearTaskHttp(task);
+        task->Clear();
+        task_mgr_->DeleteFinishTask(task);
+        return true;
+    }
+
+    bool DownloadService::AddFinishTask(UINT_PTR task_id)
+    {
+        Task* task_ptr = reinterpret_cast<Task*>(task_id);
+        auto task = task_mgr_->FindLoadingTask(task_ptr);
+        if (!task) {
+            LOG(ERROR) << "AddFinishTask 任务不存在";
+            return false;
+        }
+        task_mgr_->AddFinishTask(std::move(task));
         return true;
     }
 

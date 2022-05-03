@@ -1,4 +1,4 @@
-﻿// VideoLoader.cpp : 定义应用程序的入口点。
+﻿// BVLoader.cpp : 定义应用程序的入口点。
 //
 
 #include "pch.h"
@@ -72,7 +72,7 @@ void InitEasyLog()
     SYSTEMTIME stCur;
     ::GetLocalTime(&stCur);
     char current_date[128] = { 0 };
-    sprintf_s(current_date, 128, "VideoLoader_%04d-%02d-%02d.log", stCur.wYear,
+    sprintf_s(current_date, 128, "BVLoader_%04d-%02d-%02d.log", stCur.wYear,
         stCur.wMonth, stCur.wDay);
     strcat_s(log_path, current_date);
     std::string log_file(log_path);

@@ -10,11 +10,11 @@
 		<Label name="lbl_state" float="true" pos="260,40,0,0" width="180" height="15" align="left" valign="center" textcolor="#FF999999" endellipsis="true" />
 		<Label name="lbl_size" float="true" pos="340,40,458,55" textcolor="#FF999999" align="right" endellipsis="true" />
 
-		<Button name="btn_start_loading" tooltip="下载" pos="518,30,0,0" float="true" visible="false" width="16" height="16" normalimage="file='reload.png' source='0,0,16,16'" hotimage="file='reload.png' source='0,16,16,32'" pushedimage="file='reload.png' source='0,32,16,48'" disabledimage="file='reload.png' source='0,48,16,64'" cursor="hand"/>
+		<Button name="btn_loading_start" tooltip="下载" pos="518,30,0,0" float="true" visible="false" width="16" height="16" normalimage="file='reload.png' source='0,0,16,16'" hotimage="file='reload.png' source='0,16,16,32'" pushedimage="file='reload.png' source='0,32,16,48'" disabledimage="file='reload.png' source='0,48,16,64'" cursor="hand"/>
 		
-		<Button name="btn_stop_loading" tooltip="暂停" pos="518,30,0,0" float="true" visible="false" width="16" height="16" normalimage="file='pause.png' source='0,0,16,16' " hotimage="file='pause.png' source='0,16,16,32' " pushedimage="file='pause.png' source='0,32,16,48'" disabledimage="file='pause.png' source='0,48,16,64'" cursor="hand" />
+		<Button name="btn_loading_stop" tooltip="暂停" pos="518,30,0,0" float="true" visible="false" width="16" height="16" normalimage="file='pause.png' source='0,0,16,16' " hotimage="file='pause.png' source='0,16,16,32' " pushedimage="file='pause.png' source='0,32,16,48'" disabledimage="file='pause.png' source='0,48,16,64'" cursor="hand" />
 
-		<Button name="btn_delete_loading" tooltip="删除" pos="554,30,0,0" float="true" width="16" height="16" normalimage="file='delete.png' source='0,0,16,16'" hotimage="file='delete.png' source='0,16,16,32'" pushedimage="file='delete.png' source='0,32,16,48'" disabledimage="file='delete.png' source='0,48,16,64'"  cursor="hand"/>
+		<Button name="btn_loading_delete" tooltip="删除" pos="554,30,0,0" float="true" width="16" height="16" normalimage="file='delete.png' source='0,0,16,16'" hotimage="file='delete.png' source='0,16,16,32'" pushedimage="file='delete.png' source='0,32,16,48'" disabledimage="file='delete.png' source='0,48,16,64'"  cursor="hand"/>
 		<Control float="true" pos="0,76,0,0" width="840" height="1" bkcolor="#FFF0F3F5"/>
 	</ListContainerElement>
 </Window>

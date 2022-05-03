@@ -18,8 +18,9 @@ enum class MessageIconType {
 enum {
     WM_MAINWND_MSGBOX = kBaseWindowMessage + 1,
     WM_MAINWND_DECODE,
+    WM_MAINWND_NOTIFY_STATUS,
 };
 
 enum MsgWparam {
-    WPARAM_DELETE_LOADING_ITEM = 0,
+    WPARAM_DELETE_LIST_ITEM = 0,
 };
