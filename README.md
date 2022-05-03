@@ -3,8 +3,10 @@ Bilibili官网 - https://www.bilibili.com/
 ## 声明  
 软件均仅用于学习交流，请勿用于任何商业用途！感谢大家！  
 ## 介绍 
-视频下载接口调用参考：https://github.com/vooidzero/B23Downloader，非常感谢。  
-代码使用VS2019开发，界面库用的开源duilib，项目包括几个主要模块：异步线程池、下载中心、音视频编解码，视频下载后自动转换成mp3保存到本地，支持断点续传。  
+1.工具只支持Windows系统，win10上可正常运行。  
+2.代码使用VS2019开发，界面库用的开源duilib，项目包括几个主要模块：异步线程池、下载中心、音视频编解码，视频下载后自动转换成mp3保存到本地，支持断点续传。  
+3.视频下载接口资料来自网络，仅限于学习交流，请勿用于任何商业用途。
+
 使用的开源库有:  
 duilib: https://github.com/qdtroy/DuiLib_Ultimate  
 easylogging: https://github.com/amraynonweb/  
