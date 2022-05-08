@@ -1,23 +1,23 @@
-# BÕ¾ÊÓÆµÏÂÔØ£¬ÊÓÆµ×ªmp3¹¤¾ß 
-Bilibili¹ÙÍø - https://www.bilibili.com/
-## ÉùÃ÷ 
-Èí¼ş¾ù½öÓÃÓÚÑ§Ï°½»Á÷£¬ÇëÎğÓÃÓÚÈÎºÎÉÌÒµÓÃÍ¾£¡¸ĞĞ»´ó¼Ò£¡ 
-## ½éÉÜ 
-ÊÓÆµÏÂÔØ½Ó¿Ú²Î¿¼£ºhttps://github.com/vooidzero/B23Downloader£¬·Ç³£¸ĞĞ»¡£
+# Bç«™è§†é¢‘ä¸‹è½½ï¼Œmp3ä¸‹è½½å·¥å…·  
+Bilibiliå®˜ç½‘ - https://www.bilibili.com/  
+## å£°æ˜  
+è½¯ä»¶å‡ä»…ç”¨äºå­¦ä¹ äº¤æµï¼Œè¯·å‹¿ç”¨äºä»»ä½•å•†ä¸šç”¨é€”ï¼æ„Ÿè°¢å¤§å®¶ï¼  
+## ä»‹ç» 
+1.å·¥å…·åªæ”¯æŒWindowsç³»ç»Ÿï¼Œwin10ä¸Šå¯æ­£å¸¸è¿è¡Œã€‚  
+2.ä»£ç ä½¿ç”¨VS2019å¼€å‘ï¼Œç•Œé¢åº“ç”¨çš„å¼€æºduilibï¼Œé¡¹ç›®åŒ…æ‹¬å‡ ä¸ªä¸»è¦æ¨¡å—ï¼šå¼‚æ­¥çº¿ç¨‹æ± ã€ä¸‹è½½ä¸­å¿ƒã€éŸ³è§†é¢‘ç¼–è§£ç ï¼Œè§†é¢‘ä¸‹è½½åè‡ªåŠ¨è½¬æ¢æˆmp3ä¿å­˜åˆ°æœ¬åœ°ï¼Œæ”¯æŒæ–­ç‚¹ç»­ä¼ ã€‚  
+3.è§†é¢‘ä¸‹è½½æ¥å£èµ„æ–™æ¥è‡ªç½‘ç»œï¼Œä»…é™äºå­¦ä¹ äº¤æµï¼Œè¯·å‹¿ç”¨äºä»»ä½•å•†ä¸šç”¨é€”ã€‚
 
-´úÂëÊ¹ÓÃVS2019¿ª·¢£¬½çÃæ¿âÓÃµÄ¿ªÔ´duilib£¬ÏîÄ¿°üÀ¨¼¸¸öÖ÷ÒªÄ£¿é£ºÒì²½Ïß³Ì³Ø¡¢ÏÂÔØÖĞĞÄ¡¢ÒôÊÓÆµ±à½âÂë£¬ÊÓÆµÏÂÔØºó×Ô¶¯×ª»»³Émp3±£´æµ½±¾µØ¡£
-
-Ê¹ÓÃµÄ¿ªÔ´¿âÓĞ:  
+ä½¿ç”¨çš„å¼€æºåº“æœ‰:  
 duilib: https://github.com/qdtroy/DuiLib_Ultimate  
-easylogging: https://github.com/amraynonweb/  
+easylogging: https://github.com/amraynonweb/easyloggingpp    
 libcurl: https://github.com/curl/curl  
 openssl: https://github.com/openssl/openssl  
 zlib: http://www.zlib.net/  
-ffmpeg: https://github.com/FFmpeg/FFmpeg  
+ffmpeg: http://ffmpeg.org/   
 mp3lame: https://lame.sourceforge.io/  
 jsoncpp: https://github.com/open-source-parsers/jsoncpp  
 restclient: https://github.com/mrtazz/restclient-cpp  
-## Ê¹ÓÃ½ØÍ¼ 
+## ä½¿ç”¨æˆªå›¾ 
 ![](https://raw.githubusercontent.com/JelinYao/BVLoader/main/Bin/img/screen1.png)  
 
 ![](https://raw.githubusercontent.com/JelinYao/BVLoader/main/Bin/img/screen2.png)  
