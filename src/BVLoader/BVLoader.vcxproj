@@ -96,6 +96,7 @@
       <AdditionalIncludeDirectories>.;./wnd;./service;./define;../../include;../../include/Duilib;../../include/ffmpeg</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -176,10 +177,12 @@
     <ClInclude Include="service\service_manager.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="url_parse.h" />
+    <ClInclude Include="wnd\qrcode_view.h" />
     <ClInclude Include="wnd\wnd_base.h" />
+    <ClInclude Include="wnd\wnd_login.h" />
     <ClInclude Include="wnd\wnd_main.h" />
     <ClInclude Include="wnd\wnd_msg.h" />
-    <ClInclude Include="wnd\wnd_parse.h" />
+    <ClInclude Include="wnd\wnd_info.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -193,10 +196,12 @@
     <ClCompile Include="service\download\task_manager.cpp" />
     <ClCompile Include="service\service_manager.cpp" />
     <ClCompile Include="url_parse.cpp" />
+    <ClCompile Include="wnd\qrcode_view.cpp" />
     <ClCompile Include="wnd\wnd_base.cpp" />
+    <ClCompile Include="wnd\wnd_login.cpp" />
     <ClCompile Include="wnd\wnd_main.cpp" />
     <ClCompile Include="wnd\wnd_msg.cpp" />
-    <ClCompile Include="wnd\wnd_parse.cpp" />
+    <ClCompile Include="wnd\wnd_info.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BVLoader.rc" />

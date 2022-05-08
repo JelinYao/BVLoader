@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "wnd_main.h"
 #include "soft_define.h"
-#include "wnd_parse.h"
+#include "wnd_info.h"
 #include "service_manager.h"
 #include "download/task.h"
 #include "wnd_msg.h"
+#include "wnd_login.h"
 
 using namespace download;
 WndMain::WndMain()
@@ -25,7 +26,7 @@ LPCWSTR WndMain::GetWndName() const
 void WndMain::InitWindow()
 {
     __super::InitWindow();
-    wnd_parse_ = std::make_unique<WndParse>();
+    wnd_parse_ = std::make_unique<WndInfo>();
     hwnd_parse_ = wnd_parse_->Create(m_hWnd);
     wnd_parse_->ShowWindow(false, false);
     DOWNLOAD_SERVICE()->AddDelegate(this, nullptr);
@@ -236,6 +237,7 @@ void WndMain::OnClick(TNotifyUI& msg)
         Close();
     }
     else if (name.Compare(L"btn_download") == 0) {
+        ShowLogin();
         assert(wnd_parse_);
         wnd_parse_->CenterWindow();
         wnd_parse_->ShowWindow();
@@ -342,6 +344,17 @@ bool WndMain::OnNotifyListItem(void* param)
     TNotifyUI* notify = reinterpret_cast<TNotifyUI*>(param);
 
     return true;
+}
+
+void WndMain::ShowLogin()
+{
+    if (!wnd_login_) {
+        wnd_login_ = std::make_unique<WndLogin>();
+        hwnd_login_ = wnd_login_->Create(m_hWnd);
+    }
+    wnd_login_->CenterWindow();
+    wnd_login_->ShowModal();
+    wnd_login_ = nullptr;
 }
 
 UINT WndMain::ShowMsgBox(MessageIconType icon, LPCWSTR info)

@@ -3,7 +3,7 @@
 
 static constexpr unsigned int kBaseWindowMessage = WM_USER + 1000;
 
-// wnd parse message
+// info window message
 enum  {
     WM_PARSEWND_ASYNC_SUCCESS = kBaseWindowMessage + 1,
     WM_PARSEWND_ASYNC_ERROR,
@@ -15,6 +15,7 @@ enum class MessageIconType {
     ICON_OK,
 };
 
+// main window message
 enum {
     WM_MAINWND_MSGBOX = kBaseWindowMessage + 1,
     WM_MAINWND_DECODE,
@@ -24,3 +25,16 @@ enum {
 enum MsgWparam {
     WPARAM_DELETE_LIST_ITEM = 0,
 };
+
+// qrcode window message
+enum {
+    WM_QRCODEWND_ASYNC_SUCCESS = kBaseWindowMessage + 1,
+    WM_QRCODEWND_ASYNC_ERROR,
+};
+
+// qrcode window timer
+enum {
+    TIMER_ID_QRCODEWND_LOGIN = 100, // ÇëÇóµÇÂ¼×´Ì¬
+};
+
+static const int kQrcodeLoginTimerElapse = 3000;

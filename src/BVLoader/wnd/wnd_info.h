@@ -2,7 +2,7 @@
 #include "wnd_base.h"
 #include "async/async_service_delegate.h"
 
-class WndParse
+class WndInfo
     : public WndBase
     , public IAsyncServiceDelegate
 {
@@ -13,13 +13,13 @@ class WndParse
         PAGE_SUCCESS,
     };
 public:
-    WndParse();
-    ~WndParse();
+    WndInfo();
+    ~WndInfo();
 
 protected:
     LPCWSTR GetWndName()const override;
     LPCWSTR GetXmlPath()const override {
-        return L"wnd_parse.xml";
+        return L"wnd_info.xml";
     }
     void InitWindow() override;
     LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
@@ -33,12 +33,12 @@ protected:
         DECLARE_CTRL(author_, L"label_author")
         DECLARE_CTRL(duration_, L"label_duration")
         DECLARE_CTRL(cover_, L"ctrl_cover")
-        DECLARE_CTRL_BIND(btn_download_, CControlUI, L"btn_download", &WndParse::OnNotifyDownload)
+        DECLARE_CTRL_BIND(btn_download_, CControlUI, L"btn_download", &WndInfo::OnNotifyDownload)
     END_INIT_CTRL
 
     BEGIN_BIND_CTRL
-        BIND_CTRL(L"btn_close", &WndParse::OnNotifyClose)
-        BIND_CTRL(L"btn_parse", &WndParse::OnNotifyParse)
+        BIND_CTRL(L"btn_close", &WndInfo::OnNotifyClose)
+        BIND_CTRL(L"btn_parse", &WndInfo::OnNotifyParse)
     END_BIND_CTRL
     bool OnNotifyClose(void* param);
     bool OnNotifyParse(void* param);
@@ -47,7 +47,7 @@ protected:
     bool OnClickPraseUrl(const CDuiString& text);
     bool OnClickDownload();
 
-    void OnAsyncComplete(AsyncTaskType task_type, AsyncErrorCode code, void* data) override;
+    void OnAsyncComplete(AsyncTaskType task_type, AsyncErrorCode code, void* data, void* param) override;
     LRESULT OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam);
     LRESULT OnMsgAsyncError(WPARAM wParam, LPARAM lParam);
     void OnTaskGetInfo(LPARAM lParam);

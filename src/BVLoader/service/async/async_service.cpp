@@ -36,6 +36,7 @@ bool AsyncService::Init()
 void AsyncService::Exit()
 {
     need_exit_ = true;
+    ClearDelegate();
     task_event_.notify_one();
     if (async_thread_->joinable()) {
         async_thread_->join();
@@ -44,7 +45,17 @@ void AsyncService::Exit()
 
 void AsyncService::AddDelegate(IAsyncServiceDelegate* delegate, void* param)
 {
-   delegate_ = delegate;
+    std::lock_guard<std::mutex> lock(delegate_mutex_);
+    delegate_list_[delegate] = param;
+}
+
+void AsyncService::RemoveDelegate(IAsyncServiceDelegate* delegate)
+{
+    std::lock_guard<std::mutex> lock(delegate_mutex_);
+    auto iter = delegate_list_.find(delegate);
+    if (iter != delegate_list_.end()) {
+        delegate_list_.erase(iter);
+    }
 }
 
 void AsyncService::AddHttpTask(AsyncTaskType task_type, VideoType video_type, std_cstr_ref url)
@@ -66,6 +77,17 @@ void AsyncService::AddDecodeTask(UINT_PTR task_id, std_cwstr_ref video_path, std
     }
     std::lock_guard<std::mutex> lock(task_mutex_);
     task_list_.emplace_back(std::make_shared<DecodeTask>(task_id, video_path, mp3_path));
+    task_event_.notify_one();
+}
+
+void AsyncService::AddLoginTask(std_cstr_ref url, std_cstr_ref auth_key)
+{
+    if (auth_key.empty()) {
+        LOG(ERROR) << "AddLoginTask invalid params";
+        return;
+    }
+    std::lock_guard<std::mutex> lock(task_mutex_);
+    task_list_.emplace_back(std::make_shared<LoginTask>(url, auth_key));
     task_event_.notify_one();
 }
 
@@ -108,6 +130,12 @@ void AsyncService::DoAsyncWork()
         case AsyncTaskType::TASK_DECODE_VIDEO:
             OnDecodeVideo(task);
             break;
+        case AsyncTaskType::TASK_GET_LOGIN_URL:
+            OnGetLoginUrl(task);
+            break;
+        case AsyncTaskType::TASK_GET_LOGIN_INFO:
+            OnGetLoginInfo(task);
+            break;
         default:
             break;
         }
@@ -137,8 +165,8 @@ void AsyncService::OnGetVideoInfo(const std::shared_ptr<IAsyncTask>& task)
     default:
         break;
     }
-    if (!result && delegate_) {
-        delegate_->OnAsyncComplete(task->task_type, AsyncErrorCode::ERROR_PARSE_RESPONSE, nullptr);
+    if (!result && !IsDelegateEmpty()) {
+        NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_PARSE_RESPONSE, nullptr);
     }
 }
 
@@ -156,28 +184,27 @@ void AsyncService::OnDownloadCover(const std::shared_ptr<IAsyncTask>& task)
     temp_path.append(L".jpg");
     http.Initialize(http_task->url, temp_path);
     bool result = http.Start();
-    if (delegate_) {
-        std::wstring* data = new std::wstring(temp_path);
-        result ? delegate_->OnAsyncComplete(AsyncTaskType::TASK_DOWNLOAD_COVER, AsyncErrorCode::ERROR_SUCCESS, data) :
-            delegate_->OnAsyncComplete(AsyncTaskType::TASK_DOWNLOAD_COVER, AsyncErrorCode::ERROR_NETWORK_UNAVAILABLE, nullptr);
+    if (!IsDelegateEmpty()) {
+        if (result) {
+            std::wstring* data = new std::wstring(temp_path);
+            NotifyDelegate(AsyncTaskType::TASK_DOWNLOAD_COVER, AsyncErrorCode::ERROR_SUCCESS, data);
+        }
+        else {
+            NotifyDelegate(AsyncTaskType::TASK_DOWNLOAD_COVER, AsyncErrorCode::ERROR_NETWORK_UNAVAILABLE, nullptr);
+        }   
     }
 }
 
 void AsyncService::OnGetPlayerUrl(const std::shared_ptr<IAsyncTask>& task)
 {
-    auto http_task = dynamic_pointer_cast<HttpTask>(task);
-    if (http_task == nullptr) {
-        LOG(ERROR) << "OnGetPlayerUrl 转换AsyncTask对象失败";
-        return;
-    }
-    auto response = DoHttpRequest(http_task);
+    auto response = DoHttpRequest(task);
     if (response.empty()) {
         return;
     }
     // 数据解析
-    bool result = ParseUgcPlayerUrl(http_task, response);
-    if (!result && delegate_) {
-        delegate_->OnAsyncComplete(http_task->task_type, AsyncErrorCode::ERROR_PARSE_RESPONSE, nullptr);
+    bool result = ParseUgcPlayerUrl(task, response);
+    if (!result && !IsDelegateEmpty()) {
+        NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_PARSE_RESPONSE, nullptr);
     }
 }
 
@@ -192,22 +219,66 @@ void AsyncService::OnDecodeVideo(const std::shared_ptr<IAsyncTask>& task)
     AUDIO_SERVICE()->Decode(decode_task->task_id, decode_task->video_path, decode_task->mp3_path);
 }
 
-std_str AsyncService::DoHttpRequest(const std::shared_ptr<HttpTask>& task)
+void AsyncService::OnGetLoginUrl(const std::shared_ptr<IAsyncTask>& task)
 {
+    auto response = DoHttpRequest(task);
+    if (response.empty()) {
+        return;
+    }
+    // 数据解析
+    bool result = ParseLoginUrl(task, response);
+    if (!result && !IsDelegateEmpty()) {
+        NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_PARSE_RESPONSE, nullptr);
+    }
+}
+
+void AsyncService::OnGetLoginInfo(const std::shared_ptr<IAsyncTask>& task)
+{
+    auto login_task = dynamic_pointer_cast<LoginTask>(task);
+    if (login_task == nullptr) {
+        LOG(ERROR) << "OnGetLoginInfo 转换AsyncTask对象失败";
+        return;
+    }
     RestClient::Connection http;
     InitHttp(http);
-    auto response = http.get(task->url);
+    std_str param("oauthKey=");
+    param += login_task->auth_key;
+    auto response = http.post(login_task->url, param);
     if (response.curl_code != CURLE_OK) {
         LOG(ERROR) << "DoHttpRequest network error, code: " << response.curl_code;
-        if (delegate_) {
-            delegate_->OnAsyncComplete(task->task_type, AsyncErrorCode::ERROR_NETWORK_UNAVAILABLE, nullptr);
+        if (!IsDelegateEmpty()) {
+            NotifyDelegate(login_task->task_type, AsyncErrorCode::ERROR_NETWORK_UNAVAILABLE, nullptr);
+        }
+        return;
+    }
+    // 数据解析
+    bool result = ParseLoginInfo(task, response.body);
+    if (!result && !IsDelegateEmpty()) {
+        NotifyDelegate(login_task->task_type, AsyncErrorCode::ERROR_PARSE_RESPONSE, nullptr);
+    }
+}
+
+std_str AsyncService::DoHttpRequest(const std::shared_ptr<IAsyncTask>& task)
+{
+    auto http_task = dynamic_pointer_cast<HttpTask>(task);
+    if (http_task == nullptr) {
+        LOG(ERROR) << "DoHttpRequest 转换AsyncTask对象失败";
+        return "";
+    }
+    RestClient::Connection http;
+    InitHttp(http);
+    auto response = http.get(http_task->url);
+    if (response.curl_code != CURLE_OK) {
+        LOG(ERROR) << "DoHttpRequest network error, code: " << response.curl_code;
+        if (!IsDelegateEmpty()) {
+            NotifyDelegate(http_task->task_type, AsyncErrorCode::ERROR_NETWORK_UNAVAILABLE, nullptr);
         }
         return "";
     }
     return response.body;
 }
 
-bool AsyncService::ParseUgcInfo(const std::shared_ptr<HttpTask>& task, std_cstr_ref response)
+bool AsyncService::ParseUgcInfo(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response)
 {
     // 数据源：https://api.bilibili.com/x/web-interface/view?bvid=1z44y137pK
     try {
@@ -238,15 +309,20 @@ bool AsyncService::ParseUgcInfo(const std::shared_ptr<HttpTask>& task, std_cstr_
             return false;
         }
         auto cid = pages[0]["cid"].asInt64();
-        if (delegate_) {
+        if (!IsDelegateEmpty()) {
             VideoInfo* userData = new VideoInfo(std::move(bvid), string_utils::Utf8ToU(title), 
                 string_utils::Utf8ToU(author), aid, cid, duration, ctime);
-            delegate_->OnAsyncComplete(task->task_type, AsyncErrorCode::ERROR_SUCCESS, (void*)userData);
+            NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_SUCCESS, (void*)userData);
+            auto http_task = dynamic_pointer_cast<HttpTask>(task);
+            if (http_task == nullptr) {
+                LOG(ERROR) << "ParseUgcInfo 转换AsyncTask对象失败";
+                return false;
+            }
             // 下载封面图片
-            AddHttpTask(AsyncTaskType::TASK_DOWNLOAD_COVER, task->video_type, pic);
+            AddHttpTask(AsyncTaskType::TASK_DOWNLOAD_COVER, http_task->video_type, pic);
             // 获取视频下载地址
-            auto url = BuildPlayerUrl(task->video_type, aid, cid);
-            AddHttpTask(AsyncTaskType::TASK_GET_PLAYER_URL, task->video_type, url);
+            auto url = BuildPlayerUrl(http_task->video_type, aid, cid);
+            AddHttpTask(AsyncTaskType::TASK_GET_PLAYER_URL, http_task->video_type, url);
         }
         return true;
     }
@@ -256,7 +332,7 @@ bool AsyncService::ParseUgcInfo(const std::shared_ptr<HttpTask>& task, std_cstr_
     return false;
 }
 
-bool AsyncService::ParseUgcPlayerUrl(const std::shared_ptr<HttpTask>& task, std_cstr_ref response)
+bool AsyncService::ParseUgcPlayerUrl(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response)
 {
     // 数据源：https://api.bilibili.com/x/player/playurl?avid=980706249&cid=577595237&qn=0&fourk=1
     try {
@@ -265,20 +341,20 @@ bool AsyncService::ParseUgcPlayerUrl(const std::shared_ptr<HttpTask>& task, std_
         std::shared_ptr<Json::CharReader> rd(builder.newCharReader());
         std_str error_msg;
         if (!rd->parse(response.c_str(), response.c_str()+response.size(), &root, &error_msg)) {
-            LOG(ERROR) << "ParseUgcVideoUrl parse json failed, data: " << response;
+            LOG(ERROR) << "ParseUgcPlayerUrl parse json failed, data: " << response;
             return false;
         }
         int code = root[kHttpResponseCode].asInt();
         auto msg = root[kHttpResponseMessage].asString();
         if (code != 0) {
-            LOG(ERROR) << "ParseUgcVideoUrl parse json failed, code: " << code;
+            LOG(ERROR) << "ParseUgcPlayerUrl parse json failed, code: " << code;
             return false;
         }
         auto& data = root[kHttpResponseData];
         auto& desc_list = data["accept_description"];
         auto& quality_list = data["accept_quality"];
         if (!desc_list.isArray() || !quality_list.isArray() || desc_list.size() != quality_list.size()) {
-            LOG(ERROR) << "ParseUgcVideoUrl parse accept_quality failed";
+            LOG(ERROR) << "ParseUgcPlayerUrl parse accept_quality failed";
             return false;
         }
         std::vector<QualityInfo> qn_array;
@@ -294,13 +370,95 @@ bool AsyncService::ParseUgcPlayerUrl(const std::shared_ptr<HttpTask>& task, std_
         auto url = durl[0]["url"].asCString();
         auto encode = string_utils::UrlEncode(url);
         // 解析完毕，回调通知界面
-        if (delegate_) {
+        if (!IsDelegateEmpty()) {
             PlayerInfo* userData = new PlayerInfo(std::move(url), std::move(qn_array));
-            delegate_->OnAsyncComplete(task->task_type, AsyncErrorCode::ERROR_SUCCESS, userData);
+            NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_SUCCESS, userData);
+        }
+        return true;
+    }
+    catch (...) {
+        LOG(ERROR) << "ParseUgcPlayerUrl parse json failed";
+    }
+    return false;
+}
+
+bool AsyncService::ParseLoginUrl(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response)
+{
+    try {
+        Json::Value root;
+        Json::CharReaderBuilder builder;
+        std::shared_ptr<Json::CharReader> rd(builder.newCharReader());
+        std_str error_msg;
+        if (!rd->parse(response.c_str(), response.c_str() + response.size(), &root, &error_msg)) {
+            LOG(ERROR) << "ParseLoginUrl parse json failed, data: " << response;
+            return false;
+        }
+        int code = root[kHttpResponseCode].asInt();
+        if (code != 0) {
+            LOG(ERROR) << "ParseLoginUrl parse json failed, code: " << code;
+            return false;
+        }
+        auto& data = root[kHttpResponseData];
+        auto url = data["url"].asString();
+        auto auth_key = data["oauthKey"].asString();
+        // 解析完毕，回调通知界面
+        if (!IsDelegateEmpty()) {
+            QrcodeUrlInfo* userData = new QrcodeUrlInfo(std::move(url), std::move(auth_key));
+            NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_SUCCESS, userData);
         }
     }
     catch (...) {
-        LOG(ERROR) << "ParseUgcVideoUrl parse json failed";
+        LOG(ERROR) << "ParseLoginUrl parse json failed";
     }
-    return true;
+    return false;
+}
+
+bool AsyncService::ParseLoginInfo(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response)
+{
+    // {"status":false,"data":-2,"message":"Can't Match oauthKey~"}
+    /* {"code":0, "status" : true, "ts" : 1652020723, "data" : {"url":"https://passport.biligame.com/crossDomain?DedeUserID=481785775&DedeUserID__ckMd5=63df10915c6064ee&Expires=15551000&SESSDATA=b1cdbe41%2C1667572723%2C36d43%2A51&bili_jct=87c02a63341c53a05736e6331d0f6d57&gourl=http%3A%2F%2Fwww.bilibili.com"}}*/
+    try {
+        Json::Value root;
+        Json::CharReaderBuilder builder;
+        std::shared_ptr<Json::CharReader> rd(builder.newCharReader());
+        std_str error_msg;
+        if (!rd->parse(response.c_str(), response.c_str() + response.size(), &root, &error_msg)) {
+            LOG(ERROR) << "ParseLoginInfo parse json failed, data: " << response;
+            return false;
+        }
+        auto& data = root[kHttpResponseData];
+        int code = 0;
+        std_str url;
+        if (data.isInt()) {
+            code = data.asInt();
+        }
+        else {
+            // 登陆成功，解析用户信息
+            // https://passport.biligame.com/crossDomain?DedeUserID=481785775&DedeUserID__ckMd5=63df10915c6064ee&Expires=15551000&SESSDATA=7ef40bd8%2C1667573239%2Cf4223%2A51&bili_jct=0bd8aca022395f2cb0ede8f576baa53a&gourl=http%3A%2F%2Fwww.bilibili.com
+            url = data["url"].asString();
+        }
+        // 解析完毕，回调通知界面
+        if (!IsDelegateEmpty()) {
+            QrcodeLoginInfo* login_info = new QrcodeLoginInfo(code, std::move(url));
+            NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_SUCCESS, login_info);
+        }
+    }
+    catch (...) {
+        LOG(ERROR) << "ParseLoginInfo parse json failed";
+    }
+    return false;
+}
+
+void AsyncService::NotifyDelegate(AsyncTaskType task_type, AsyncErrorCode code, void* data)
+{
+    std::lock_guard<std::mutex> lock(delegate_mutex_);
+    for (auto& delegate : delegate_list_) {
+        delegate.first->OnAsyncComplete(task_type, code, data, delegate.second);
+    }
+}
+
+void AsyncService::ClearDelegate()
+{
+    std::lock_guard<std::mutex> lock(delegate_mutex_);
+    delegate_list_.clear();
 }

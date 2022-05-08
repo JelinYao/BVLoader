@@ -81,3 +81,27 @@ public:
     std_str url;
     std::vector<QualityInfo> qn;
 };
+
+// 登录二维码url信息
+class QrcodeUrlInfo {
+public:
+    QrcodeUrlInfo(std_str_r_ref _url, std_str_r_ref _key)
+        : url(std::move(_url))
+        , auth_key(std::move(_key)) {
+    }
+
+    std_str url;
+    std_str auth_key;
+};
+
+// 登录状态信息
+class QrcodeLoginInfo {
+public:
+    QrcodeLoginInfo(int _code, std_str_r_ref _url)
+        : code(_code)
+        , url(std::move(_url)) {
+    }
+
+    int code = 0;
+    std_str url;
+};

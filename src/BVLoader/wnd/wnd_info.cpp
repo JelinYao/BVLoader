@@ -1,26 +1,26 @@
 #include "pch.h"
-#include "wnd_parse.h"
+#include "wnd_info.h"
 #include "url_parse.h"
 #include "service_manager.h"
 #include "message_define.h"
 #include "soft_define.h"
 
-WndParse::WndParse()
+WndInfo::WndInfo()
 {
     m_bDeleteThis = false;
     m_dwStyle = UI_WNDSTYLE_FRAME ^ WS_MAXIMIZEBOX;
 }
 
-WndParse::~WndParse()
+WndInfo::~WndInfo()
 {
 }
 
-LPCWSTR WndParse::GetWndName() const
+LPCWSTR WndInfo::GetWndName() const
 {
     return kWndParseTitle;
 }
 
-void WndParse::InitWindow()
+void WndInfo::InitWindow()
 {
     __super::InitWindow();
     auto service = ServiceManager::Instance()->GetAsyncService();
@@ -28,7 +28,7 @@ void WndParse::InitWindow()
     service->AddDelegate(this, nullptr);
 }
 
-LRESULT WndParse::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT WndInfo::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
@@ -42,7 +42,7 @@ LRESULT WndParse::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
     return __super::HandleMessage(uMsg, wParam, lParam);
 }
 
-bool WndParse::OnNotifyClose(void* param)
+bool WndInfo::OnNotifyClose(void* param)
 {
     TNotifyUI* notify = reinterpret_cast<TNotifyUI*>(param);
     if (notify->sType == DUI_MSGTYPE_CLICK) {
@@ -51,7 +51,7 @@ bool WndParse::OnNotifyClose(void* param)
     return true;
 }
 
-bool WndParse::OnNotifyParse(void* param)
+bool WndInfo::OnNotifyParse(void* param)
 {
     TNotifyUI* notify = reinterpret_cast<TNotifyUI*>(param);
     if (notify->sType == DUI_MSGTYPE_CLICK) {
@@ -63,7 +63,7 @@ bool WndParse::OnNotifyParse(void* param)
     return true;
 }
 
-bool WndParse::OnNotifyDownload(void* param)
+bool WndInfo::OnNotifyDownload(void* param)
 {
     TNotifyUI* notify = reinterpret_cast<TNotifyUI*>(param);
     if (notify->sType == DUI_MSGTYPE_CLICK) {
@@ -72,7 +72,7 @@ bool WndParse::OnNotifyDownload(void* param)
     return true;
 }
 
-bool WndParse::OnClickPraseUrl(const CDuiString& text)
+bool WndInfo::OnClickPraseUrl(const CDuiString& text)
 {
     if (text.IsEmpty()) {
         
@@ -88,7 +88,7 @@ bool WndParse::OnClickPraseUrl(const CDuiString& text)
     return true;
 }
 
-bool WndParse::OnClickDownload()
+bool WndInfo::OnClickDownload()
 {
     // 获取视频下载地址
     if (!video_info_ || !player_info_) {
@@ -107,7 +107,7 @@ bool WndParse::OnClickDownload()
     return true;
 }
 
-void WndParse::OnAsyncComplete(AsyncTaskType task_type, AsyncErrorCode code, void* data)
+void WndInfo::OnAsyncComplete(AsyncTaskType task_type, AsyncErrorCode code, void* data, void* param)
 {
     // 往UI线程转发
     if (code == AsyncErrorCode::ERROR_SUCCESS) {
@@ -119,7 +119,7 @@ void WndParse::OnAsyncComplete(AsyncTaskType task_type, AsyncErrorCode code, voi
     
 }
 
-LRESULT WndParse::OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam)
+LRESULT WndInfo::OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam)
 {
     AsyncTaskType type = static_cast<AsyncTaskType>(wParam);
     switch (type)
@@ -144,7 +144,7 @@ LRESULT WndParse::OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-LRESULT WndParse::OnMsgAsyncError(WPARAM wParam, LPARAM lParam)
+LRESULT WndInfo::OnMsgAsyncError(WPARAM wParam, LPARAM lParam)
 {
     AsyncTaskType type = static_cast<AsyncTaskType>(wParam);
     switch (type)
@@ -167,12 +167,12 @@ LRESULT WndParse::OnMsgAsyncError(WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void WndParse::OnTaskGetInfo(LPARAM lParam)
+void WndInfo::OnTaskGetInfo(LPARAM lParam)
 {
     VideoInfo* info = reinterpret_cast<VideoInfo*>(lParam);
     assert(info);
-    std::unique_ptr<VideoInfo> autoPtr(info);
-    video_info_.swap(autoPtr);
+    std::unique_ptr<VideoInfo> auto_ptr(info);
+    video_info_.swap(auto_ptr);
     title_->SetText(info->title.c_str());
     CDuiString text;
     text.Format(L"作者：%s", info->author.c_str());
@@ -185,12 +185,12 @@ void WndParse::OnTaskGetInfo(LPARAM lParam)
     btn_download_->SetEnabled(false);
 }
 
-void WndParse::OnTaskGetPlayerUrl(LPARAM lParam)
+void WndInfo::OnTaskGetPlayerUrl(LPARAM lParam)
 {
     PlayerInfo* info = reinterpret_cast<PlayerInfo*>(lParam);
     assert(info);
-    std::unique_ptr<PlayerInfo> autoPtr(info);
-    player_info_.swap(autoPtr);
+    std::unique_ptr<PlayerInfo> auto_ptr(info);
+    player_info_.swap(auto_ptr);
     for (auto& qn : info->qn) {
         CListLabelElementUI* elem = new CListLabelElementUI;
         elem->SetText(string_utils::Utf8ToU(qn.desc).c_str());
@@ -200,11 +200,11 @@ void WndParse::OnTaskGetPlayerUrl(LPARAM lParam)
     btn_download_->SetEnabled(true);
 }
 
-void WndParse::OnTaskGetSelectPlayerUrl(LPARAM lParam)
+void WndInfo::OnTaskGetSelectPlayerUrl(LPARAM lParam)
 {
     PlayerInfo* info = reinterpret_cast<PlayerInfo*>(lParam);
     assert(info);
-    std::unique_ptr<PlayerInfo> autoPtr(info);
+    std::unique_ptr<PlayerInfo> auto_ptr(info);
     // 拿到了下载地址
     main_tab_->SelectItem(PAGE_START);
     combobox_->RemoveAll();
@@ -215,7 +215,7 @@ void WndParse::OnTaskGetSelectPlayerUrl(LPARAM lParam)
     ShowWindow(false, false);
 }
 
-void WndParse::OnTaskDownloadCover(LPARAM lParam)
+void WndInfo::OnTaskDownloadCover(LPARAM lParam)
 {
     std_wstr* path = reinterpret_cast<std_wstr*>(lParam);
     assert(path);

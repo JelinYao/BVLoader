@@ -22,6 +22,11 @@ public:
         : IAsyncTask(type) {
     }
 
+    HttpTask(AsyncTaskType type, std_cstr_ref u)
+        : IAsyncTask(type) 
+        , url(u) {
+    }
+
     HttpTask(AsyncTaskType type, VideoType vt, std_cstr_ref u)
         : IAsyncTask(type)
         , video_type(vt)
@@ -33,7 +38,6 @@ public:
 
     std_str url;
     VideoType video_type;
-    
 };
 
 class DecodeTask
@@ -50,4 +54,16 @@ public:
     std_wstr video_path;
     std_wstr mp3_path;
     UINT_PTR task_id = 0;
+};
+
+class LoginTask
+    : public HttpTask
+{
+public:
+    LoginTask(std_cstr_ref url, std_cstr_ref key)
+        : HttpTask(AsyncTaskType::TASK_GET_LOGIN_INFO, url)
+        , auth_key(key) {
+    }
+
+    std_str auth_key;
 };

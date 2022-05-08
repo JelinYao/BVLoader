@@ -131,7 +131,5 @@ protected:
 	bool m_bEscape;
 	bool m_bRoundRect;
 	bool m_bDeleteThis;
-
-private:
 };
 

@@ -57,6 +57,7 @@ protected:
     void OnClickDeleteLoading(CControlUI* sender);
     void OnClickFinishLoading(CControlUI* sender);
     bool OnNotifyListItem(void* param);
+    void ShowLogin();
 
     UINT ShowMsgBox(MessageIconType icon, LPCWSTR info);
     LRESULT OnMsgMsgbox(WPARAM wParam, LPARAM lParam);
@@ -67,7 +68,9 @@ protected:
 private:
     bool need_exit_ = false;
     HWND hwnd_parse_ = NULL;
+    HWND hwnd_login_ = NULL;
     std::unique_ptr<WndBase> wnd_parse_;
+    std::unique_ptr<WndBase> wnd_login_;
     CTabLayoutUI* tab_main_ = nullptr;
     COptionUI* opt_selall_loading = nullptr;
     COptionUI* opt_selall_finish = nullptr;

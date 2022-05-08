@@ -8,9 +8,9 @@
     
     <VerticalLayout bkcolor="#FFFFFFFF" bordersize="1" bordercolor="#FFE1E1E1" inset="1,1,1,1">
         <HorizontalLayout height="40" bkimage="bk_title.png">
-            <Label text="下载中心" float="true" pos="20,10,0,0" width="100" textcolor="#FFFFFFFF" height="16" font="2" align="left" valign="center"/>
+            <Label text="视频下载工具" float="true" pos="20,10,0,0" width="100" textcolor="#FFFFFFFF" height="16" font="2" align="left" valign="center"/>
             <Button name="btn_download" float="true" pos="600,0,0,0" width="32" height="32" bkimage="download.png"/>
-            <Button name="btn_close" float="true" pos="669,0,0,0" width="31" height="29" normalimage="file='close.png' source='0,0,31,29' " hotimage="file='close.png' source='0,29,31,58'" pushedimage="close.png' source='0,58,31,87'"/>
+            <Button name="btn_close" float="true" pos="669,0,0,0" width="31" height="29" normalimage="file='close.png' source='0,0,31,29' " hotimage="file='close.png' source='0,29,31,58'" pushedimage="close.png' source='0,58,31,87'" cursor="hand"/>
         </HorizontalLayout>
         <HorizontalLayout >
             <VerticalLayout width="100" bkcolor="#FFF3F7FB">

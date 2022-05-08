@@ -10,6 +10,7 @@ static constexpr const char* kAppNameAscii = "DownloadTools";
 
 static constexpr const wchar_t* kWndParseTitle = L"视频信息";
 static constexpr const wchar_t* kWndMsgTitle = L"提示窗口";
+static constexpr const wchar_t* kWndLoginTitle = L"登录";
 
 // 定义常量文字
 static constexpr const wchar_t* kTextLoading = L"下载中";
