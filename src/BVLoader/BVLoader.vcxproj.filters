@@ -114,6 +114,9 @@
     <ClInclude Include="wnd\qrcode_view.h">
       <Filter>wnd</Filter>
     </ClInclude>
+    <ClInclude Include="define\api_define.h">
+      <Filter>define</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

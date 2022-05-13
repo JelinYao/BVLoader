@@ -47,6 +47,9 @@ bool WndInfo::OnNotifyClose(void* param)
     TNotifyUI* notify = reinterpret_cast<TNotifyUI*>(param);
     if (notify->sType == DUI_MSGTYPE_CLICK) {
         ShowWindow(false, false);
+        main_tab_->SelectItem(PAGE_START);
+        image_path_.clear();
+        url_edit_->SetText(L"");
     }
     return true;
 }
@@ -81,10 +84,10 @@ bool WndInfo::OnClickPraseUrl(const CDuiString& text)
     auto url = string_utils::UToUtf8(text.GetData());
     std_str detailUrll;
     if (!ParseBiliUrl(url, detailUrll, video_type_)) {
-
+        LOG(ERROR) << "OnClickPraseUrl 解析视频信息失败";
         return false;
     }
-    ASYNC_SERVICE()->AddHttpTask(AsyncTaskType::TASK_GET_INFO, video_type_, detailUrll);
+    ASYNC_SERVICE()->AddVideoTask(AsyncTaskType::TASK_GET_INFO, video_type_, detailUrll);
     return true;
 }
 
@@ -102,7 +105,7 @@ bool WndInfo::OnClickDownload()
     }
     // 构造请求地址
     auto url = BuildPlayerUrl(video_type_, video_info_->aid, video_info_->cid, player_info_->qn[index].value);
-    ASYNC_SERVICE()->AddHttpTask(AsyncTaskType::TASK_GET_SELECT_PLAYER_URL, video_type_, url);
+    ASYNC_SERVICE()->AddHttpTask(AsyncTaskType::TASK_GET_SELECT_PLAYER_URL, url);
     btn_download_->SetEnabled(false);
     return true;
 }
@@ -135,8 +138,8 @@ LRESULT WndInfo::OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam)
     case AsyncTaskType::TASK_GET_SELECT_PLAYER_URL:
         OnTaskGetSelectPlayerUrl(lParam);
         break;
-    case AsyncTaskType::TASK_DOWNLOAD_COVER:
-        OnTaskDownloadCover(lParam);
+    case AsyncTaskType::TASK_DOWNLOAD_IMAGE:
+        OnTaskDownloadImage(lParam);
         break;
     default:
         break;
@@ -152,18 +155,19 @@ LRESULT WndInfo::OnMsgAsyncError(WPARAM wParam, LPARAM lParam)
     case AsyncTaskType::TASK_NONE:
         break;
     case AsyncTaskType::TASK_GET_INFO:
+        // 获取视频信息失败
+        main_tab_->SelectItem(PAGE_START);
         break;
     case AsyncTaskType::TASK_GET_PLAYER_URL:
         break;
     case AsyncTaskType::TASK_GET_SELECT_PLAYER_URL:
         break;
-    case AsyncTaskType::TASK_DOWNLOAD_COVER:
+    case AsyncTaskType::TASK_DOWNLOAD_IMAGE:
         image_path_.clear();
         break;
     default:
         break;
     }
-    return 0;
     return 0;
 }
 
@@ -215,13 +219,15 @@ void WndInfo::OnTaskGetSelectPlayerUrl(LPARAM lParam)
     ShowWindow(false, false);
 }
 
-void WndInfo::OnTaskDownloadCover(LPARAM lParam)
+void WndInfo::OnTaskDownloadImage(LPARAM lParam)
 {
-    std_wstr* path = reinterpret_cast<std_wstr*>(lParam);
-    assert(path);
-    std::unique_ptr<std_wstr> autoPtr(path);
-    if (PathFileExists(path->c_str())) {
-        cover_->SetBkImage(path->c_str());
+    ImageInfo* info = reinterpret_cast<ImageInfo*>(lParam);
+    assert(info);
+    if (info->image_type == ImageType::IMAGE_VIDEO_COVER) {
+        std::unique_ptr<ImageInfo> auto_ptr(info);
+        if (PathFileExists(auto_ptr->save_path.c_str())) {
+            cover_->SetBkImage(auto_ptr->save_path.c_str());
+        }
+        image_path_ = std::move(auto_ptr->save_path);
     }
-    image_path_ = std::move(*path);
 }

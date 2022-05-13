@@ -156,6 +156,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="define\api_define.h" />
     <ClInclude Include="define\common_define.h" />
     <ClInclude Include="define\message_define.h" />
     <ClInclude Include="define\soft_define.h" />

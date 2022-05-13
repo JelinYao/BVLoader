@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "url_parse.h"
+#include "api_define.h"
 
 #include <regex>
 /**************************************************************************************
@@ -10,10 +11,6 @@
 
 // UGC regex
 constexpr const char* kUgcRegexString = "(?:BV|bv)([a-zA-Z0-9]+)";
-// UGC视频详情查询接口
-constexpr const char* kUgcDetailApi = "https://api.bilibili.com/x/web-interface/view?bvid=";
-// UGC视频播放页查询接口
-constexpr const char* kUgcPlayerApi = "https://api.bilibili.com/x/player/playurl?avid=%I64d&cid=%I64d&qn=%d&fourk=1";
 
 bool ParseBiliUrl(std_cstr_ref url, OUT std_str_ref detailUrl, OUT VideoType& type)
 {

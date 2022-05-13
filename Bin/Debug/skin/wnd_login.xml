@@ -11,6 +11,6 @@
     </HorizontalLayout>
     <Control height="12"/>
     <QrcodeView name="qrcode" height="160" padding="70,0,70,0"/>
-    <Label text="使用bilibili手机APP扫码登录" height="20" textcolor="#FF333333" font="0" align="center" valign="center"/>
+    <Label text="使用bilibili手机客户端扫码登录" height="20" textcolor="#FF333333" font="1" align="center" valign="center"/>
     <Control />
 </VerticalLayout>

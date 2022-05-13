@@ -12,10 +12,16 @@ enum class AsyncTaskType {
     TASK_GET_INFO, // 获取详细信息
     TASK_GET_PLAYER_URL, // 获取视频下载地址
     TASK_GET_SELECT_PLAYER_URL, // 获取视频下载地址
-    TASK_DOWNLOAD_COVER, // 下载封面
     TASK_DECODE_VIDEO, // 视频解码
     TASK_GET_LOGIN_URL, // 登录二维码链接
     TASK_GET_LOGIN_INFO, // 登录二维码结果
+    TASK_GET_USER_INFO, // 登录成功后获取用户信息
+    TASK_DOWNLOAD_IMAGE, //下载图片
+};
+
+enum class ImageType {
+    IMAGE_VIDEO_COVER = 0, // 视频封面
+    IMAGE_VIDEO_AVATAR, // 用户头像
 };
 
 static const std::string kDeafultReferer = "https://www.bilibili.com";

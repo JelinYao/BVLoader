@@ -105,3 +105,34 @@ public:
     int code = 0;
     std_str url;
 };
+
+// 用户信息
+class UserInfo {
+public:
+    UserInfo() {
+    }
+
+    int current_level = 0;
+    int current_min = 0;
+    int current_exp = 0;
+    int next_exp = 0;
+    int money = 0;
+    std_wstr name;
+};
+
+// 下载图片信息
+class ImageInfo {
+public:
+    ImageInfo(ImageType type, std_cwstr_ref path)
+        : image_type(type)
+        , save_path(path) {
+    }
+
+    ImageInfo(ImageType type, std_wstr_r_ref path)
+        : image_type(type)
+        , save_path(std::move(path)) {
+    }
+
+    std_wstr save_path;
+    ImageType image_type;
+};

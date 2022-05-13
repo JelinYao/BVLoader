@@ -6,6 +6,7 @@
 #include "download/task.h"
 #include "wnd_msg.h"
 #include "wnd_login.h"
+#include "api_define.h"
 
 using namespace download;
 WndMain::WndMain()
@@ -26,18 +27,13 @@ LPCWSTR WndMain::GetWndName() const
 void WndMain::InitWindow()
 {
     __super::InitWindow();
-    wnd_parse_ = std::make_unique<WndInfo>();
-    hwnd_parse_ = wnd_parse_->Create(m_hWnd);
-    wnd_parse_->ShowWindow(false, false);
     DOWNLOAD_SERVICE()->AddDelegate(this, nullptr);
     AUDIO_SERVICE()->AddDelegate(this, nullptr);
+    ASYNC_SERVICE()->AddDelegate(this, nullptr);
 }
 
 void WndMain::OnFinalMessage(HWND hWnd)
 {
-    if (::IsWindow(hwnd_parse_)) {
-        ::SendMessage(hwnd_parse_, WM_CLOSE, 0, 0);
-    }
     __super::OnFinalMessage(hWnd);
 }
 
@@ -50,6 +46,13 @@ bool WndMain::QuitOnSysClose()
 void WndMain::Close(UINT nRet /*= IDOK*/)
 {
     need_exit_ = true;
+    ASYNC_SERVICE()->RemoveDelegate(this);
+    if (::IsWindow(hwnd_parse_)) {
+        ::SendMessage(hwnd_parse_, WM_CLOSE, 0, 0);
+    }
+    if (::IsWindow(hwnd_login_)) {
+        ::SendMessage(hwnd_login_, WM_CLOSE, 0, 0);
+    }
     __super::Close(nRet);
     ServiceManager::Instance()->Exit();
     ::PostQuitMessage(0);
@@ -65,6 +68,14 @@ LRESULT WndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
         return OnMsgDecode(wParam, lParam);
     case WM_MAINWND_NOTIFY_STATUS:
         return OnMsgNotifyStatus(wParam, lParam);
+    case WM_MAINWND_SHOWWND:
+        return OnMsgShowWnd(wParam, lParam);
+    case WM_MAINWND_LOGIN_SUCCESS:
+        return OnMsgLoginSuccess(wParam, lParam);
+    case WM_MAINWND_ASYNC_SUCCESS:
+        return OnMsgAsyncSuccess(wParam, lParam);
+    case WM_MAINWND_ASYNC_ERROR:
+        return OnMsgAsyncError(wParam, lParam);
     default:
         break;
     }
@@ -94,6 +105,9 @@ void WndMain::NotifyStatus(const std::shared_ptr<download::Task>& task, void* pa
     switch (task->status)
     {
     case download::DownloadStatus::STATUS_LOADING: {
+        auto progress = dynamic_cast<CProgressUI*>(iter->second->FindSubControl(L"progress"));
+        assert(progress);
+        progress->SetForeImage(L"pro_load.png");
         label_state->SetText(kTextLoading);
         btn_start->SetVisible(false);
         btn_stop->SetVisible();
@@ -119,8 +133,8 @@ void WndMain::NotifyStatus(const std::shared_ptr<download::Task>& task, void* pa
         auto progress = dynamic_cast<CProgressUI*>(iter->second->FindSubControl(L"progress"));
         assert(progress);
         progress->SetForeImage(L"pro_error.png");
-        btn_start->SetVisible(false);
-        btn_stop->SetVisible();
+        btn_start->SetVisible();
+        btn_stop->SetVisible(false);
         btn_size->SetVisible(false);
         break;
     }
@@ -199,6 +213,16 @@ void WndMain::OnDecodeComplete(UINT_PTR task_id, DecodeErrorCode code, void* dat
     ::PostMessage(m_hWnd, WM_MAINWND_DECODE, (WPARAM)task_id, (LPARAM)code);
 }
 
+void WndMain::OnAsyncComplete(AsyncTaskType task_type, AsyncErrorCode code, void* data, void* param)
+{
+    if (task_type == AsyncTaskType::TASK_GET_USER_INFO
+        || task_type == AsyncTaskType::TASK_DOWNLOAD_IMAGE) {
+        // 往UI线程转发
+        UINT msg = (code == AsyncErrorCode::ERROR_SUCCESS) ? WM_MAINWND_ASYNC_SUCCESS : WM_MAINWND_ASYNC_ERROR;
+        ::PostMessage(m_hWnd, msg, (WPARAM)task_type, (LPARAM)data);
+    }
+}
+
 void WndMain::Notify(TNotifyUI& msg)
 {
     if (msg.sType == DUI_MSGTYPE_SELECTCHANGED) {
@@ -237,10 +261,12 @@ void WndMain::OnClick(TNotifyUI& msg)
         Close();
     }
     else if (name.Compare(L"btn_download") == 0) {
-        ShowLogin();
-        assert(wnd_parse_);
-        wnd_parse_->CenterWindow();
-        wnd_parse_->ShowWindow();
+        ::PostMessage(m_hWnd, WM_MAINWND_SHOWWND, (WPARAM)WPARAM_SHOW_DOWNLOAD, 0);
+    }
+    else if (name.Compare(L"btn_user") == 0) {
+        if (!user_login_) {
+            ::PostMessage(m_hWnd, WM_MAINWND_SHOWWND, (WPARAM)WPARAM_SHOW_LOGIN, 0);
+        }
     }
 }
 
@@ -349,12 +375,23 @@ bool WndMain::OnNotifyListItem(void* param)
 void WndMain::ShowLogin()
 {
     if (!wnd_login_) {
-        wnd_login_ = std::make_unique<WndLogin>();
+        wnd_login_ = std::make_unique<WndLogin>(m_hWnd);
         hwnd_login_ = wnd_login_->Create(m_hWnd);
     }
     wnd_login_->CenterWindow();
     wnd_login_->ShowModal();
     wnd_login_ = nullptr;
+    hwnd_login_ = NULL;
+}
+
+void WndMain::ShowDownload()
+{
+    if (!wnd_parse_) {
+        wnd_parse_ = std::make_unique<WndInfo>();
+        hwnd_parse_ = wnd_parse_->Create(m_hWnd);
+    }
+    wnd_parse_->CenterWindow();
+    wnd_parse_->ShowWindow();
 }
 
 UINT WndMain::ShowMsgBox(MessageIconType icon, LPCWSTR info)
@@ -369,7 +406,7 @@ LRESULT WndMain::OnMsgMsgbox(WPARAM wParam, LPARAM lParam)
 {
     switch (wParam)
     {
-    case MsgWparam::WPARAM_DELETE_LIST_ITEM:
+    case MsgboxWparam::WPARAM_DELETE_LIST_ITEM:
         OnWparamDeleteItem(lParam);
         break;
     default:
@@ -386,10 +423,14 @@ LRESULT WndMain::OnWparamDeleteItem(LPARAM lParam)
         assert(sender);
         auto item = sender->GetParent();
         assert(item);
-        UINT_PTR task_id = (UINT_PTR)lParam;
+        UINT_PTR task_id = (UINT_PTR)item->GetTag();
         if (list_loading_->GetItemIndex(item) > -1) {
             DOWNLOAD_SERVICE()->DeleteLoadingTask(task_id);
             list_loading_->Remove(item);
+            auto iter = map_loading_items_.find(task_id);
+            if (iter != map_loading_items_.end()) {
+                map_loading_items_.erase(iter);
+            }
         }
         else {
             DOWNLOAD_SERVICE()->DeleteFinishTask(task_id);
@@ -434,5 +475,56 @@ LRESULT WndMain::OnMsgNotifyStatus(WPARAM wParam, LPARAM lParam)
         return -1;
     }
     NotifyStatus(task, param);
+    return 0;
+}
+
+LRESULT WndMain::OnMsgShowWnd(WPARAM wParam, LPARAM lParam)
+{
+    ShowwndWparam param = static_cast<ShowwndWparam>(wParam);
+    switch (param)
+    {
+    case WPARAM_SHOW_LOGIN:
+        ShowLogin();
+        break;
+    case WPARAM_SHOW_DOWNLOAD:
+        ShowDownload();
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+
+LRESULT WndMain::OnMsgLoginSuccess(WPARAM wParam, LPARAM lParam)
+{
+    // 获取用户信息
+    btn_user_->SetEnabled(false);
+    ASYNC_SERVICE()->AddHttpTask(AsyncTaskType::TASK_GET_USER_INFO, kRequestUserInfo);
+    return 0;
+}
+
+LRESULT WndMain::OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam)
+{
+    AsyncTaskType task_type = static_cast<AsyncTaskType>(wParam);
+    if (task_type == AsyncTaskType::TASK_GET_USER_INFO) {
+        btn_user_->SetEnabled(true);
+        user_login_ = true;
+        UserInfo* info = reinterpret_cast<UserInfo*>(lParam);
+        assert(info);
+        std::unique_ptr<UserInfo> auto_ptr(info);
+        btn_user_->SetToolTip(auto_ptr->name.c_str());
+    }
+    else if (task_type == AsyncTaskType::TASK_DOWNLOAD_IMAGE) {
+        ImageInfo* info = reinterpret_cast<ImageInfo*>(lParam);
+        assert(info);
+        if (info->image_type == ImageType::IMAGE_VIDEO_AVATAR) {
+            btn_user_->SetBkImage(info->save_path.c_str());
+        }
+    }
+    return 0;
+}
+
+LRESULT WndMain::OnMsgAsyncError(WPARAM wParam, LPARAM lParam)
+{
     return 0;
 }

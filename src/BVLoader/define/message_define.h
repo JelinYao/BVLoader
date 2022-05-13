@@ -20,10 +20,19 @@ enum {
     WM_MAINWND_MSGBOX = kBaseWindowMessage + 1,
     WM_MAINWND_DECODE,
     WM_MAINWND_NOTIFY_STATUS,
+    WM_MAINWND_SHOWWND,
+    WM_MAINWND_LOGIN_SUCCESS,
+    WM_MAINWND_ASYNC_SUCCESS,
+    WM_MAINWND_ASYNC_ERROR,
 };
 
-enum MsgWparam {
+enum MsgboxWparam {
     WPARAM_DELETE_LIST_ITEM = 0,
+};
+
+enum ShowwndWparam {
+    WPARAM_SHOW_LOGIN,
+    WPARAM_SHOW_DOWNLOAD,
 };
 
 // qrcode window message

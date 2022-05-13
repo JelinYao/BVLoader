@@ -17,6 +17,11 @@ ffmpeg: http://ffmpeg.org/
 mp3lame: https://lame.sourceforge.io/  
 jsoncpp: https://github.com/open-source-parsers/jsoncpp  
 restclient: https://github.com/mrtazz/restclient-cpp  
+## 更新记录  
+### 2022年5月13日 -- 1.1.0  
++ 1.增加二维码登录功能，支持下载高清视频。  
++ 2.UI调整。  
++ 3.修复若干bug。  
 ## 使用截图 
 ![](https://raw.githubusercontent.com/JelinYao/BVLoader/main/Bin/img/screen1.png)  
 

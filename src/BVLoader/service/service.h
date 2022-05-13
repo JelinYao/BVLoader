@@ -15,9 +15,11 @@ class IAsyncService
 public:
     virtual void AddDelegate(IAsyncServiceDelegate* delegate, void* param) = 0;
     virtual void RemoveDelegate(IAsyncServiceDelegate* delegate) = 0;
-    virtual void AddHttpTask(AsyncTaskType task_type, VideoType video_type, std_cstr_ref url) = 0;
+    virtual void AddHttpTask(AsyncTaskType task_type, std_cstr_ref url) = 0;
+    virtual void AddVideoTask(AsyncTaskType task_type, VideoType video_type, std_cstr_ref url) = 0;
     virtual void AddDecodeTask(UINT_PTR task_id, std_cwstr_ref video_path, std_cwstr_ref mp3_path) = 0;
     virtual void AddLoginTask(std_cstr_ref url, std_cstr_ref auth_key) = 0;
+    virtual void AddDownloadImageTask(ImageType image_type, std_cstr_ref url) = 0;
 };
 
 // 下载服务对外能力接口

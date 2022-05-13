@@ -27,9 +27,12 @@ void QrcodeView::SetQrcodeUrl(std_str_r_ref url)
     tab_->SelectItem(PAGE_QRCODE);
 }
 
-void QrcodeView::ShowExpire()
+void QrcodeView::ShowExpire(const wchar_t* info)
 {
     tab_->SelectItem(PAGE_EXPIRE);
+    if (info) {
+        ctrl_expire_info_->SetText(info);
+    }
 }
 
 void QrcodeView::Init()
@@ -37,6 +40,11 @@ void QrcodeView::Init()
     __super::Init();
     tab_ = dynamic_cast<CTabLayoutUI*>(FindSubControl(L"tab_qrcode"));
     assert(tab_);
+    ctrl_expire_info_ = FindSubControl(L"label_info");
+    assert(ctrl_expire_info_);
+    auto control = FindSubControl(L"btn_refresh");
+    assert(control);
+    control->OnNotify += MakeDelegate(this, &QrcodeView::OnNotifyBtnRefresh);
 }
 
 CControlUI* QrcodeView::CreateControl(LPCTSTR pstrClass)
@@ -46,6 +54,15 @@ CControlUI* QrcodeView::CreateControl(LPCTSTR pstrClass)
         return ctrl_qrcode_;
     }
     return nullptr;
+}
+
+bool QrcodeView::OnNotifyBtnRefresh(void* param)
+{
+    TNotifyUI* notify = reinterpret_cast<TNotifyUI*>(param);
+    if (notify->sType == DUI_MSGTYPE_CLICK) {
+        m_pManager->SendNotify(this, kQrcodeViewClickRefreshMessage);
+    }
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,7 +126,8 @@ bool QrcodeUI::DoPaint(HDC hDC, const RECT& rcPaint, CControlUI* pStopControl)
     int dest_height = rcPaint.bottom - rcPaint.top;
     int x = int((rcPaint.left - m_rcItem.left) * x_rate_);
     int y = int((rcPaint.top - m_rcItem.top) * y_rate_);
-
+    // This is the best stretch mode.
+    ::SetStretchBltMode(hDC, HALFTONE);
     ::StretchBlt(hDC, rcPaint.left, rcPaint.top, dest_width, dest_height,
         mem_dc_, x, y, int(dest_width * x_rate_), int(dest_height * y_rate_), SRCCOPY);
 

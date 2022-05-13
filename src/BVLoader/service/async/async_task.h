@@ -15,7 +15,7 @@ public:
 };
 
 class HttpTask
-    : public IAsyncTask
+    : public IAsyncTask 
 {
 public:
     HttpTask(AsyncTaskType type)
@@ -23,20 +23,32 @@ public:
     }
 
     HttpTask(AsyncTaskType type, std_cstr_ref u)
-        : IAsyncTask(type) 
-        , url(u) {
-    }
-
-    HttpTask(AsyncTaskType type, VideoType vt, std_cstr_ref u)
         : IAsyncTask(type)
-        , video_type(vt)
         , url(u) {
     }
 
-    virtual ~HttpTask() {
+    ~HttpTask() {
     }
 
     std_str url;
+};
+
+class VideoTask
+    : public HttpTask
+{
+public:
+    VideoTask(AsyncTaskType type)
+        : HttpTask(type) {
+    }
+
+    VideoTask(AsyncTaskType type, VideoType vt, std_cstr_ref url)
+        : HttpTask(type, url)
+        , video_type(vt) {
+    }
+
+    virtual ~VideoTask() {
+    }
+
     VideoType video_type;
 };
 
@@ -66,4 +78,15 @@ public:
     }
 
     std_str auth_key;
+};
+
+class ImageTask 
+    : public HttpTask {
+public:
+    ImageTask(ImageType type, std_cstr_ref url)
+        : HttpTask(AsyncTaskType::TASK_DOWNLOAD_IMAGE, url)
+        , image_type(type) {
+    }
+
+    ImageType image_type;
 };

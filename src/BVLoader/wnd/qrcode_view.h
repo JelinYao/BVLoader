@@ -1,5 +1,6 @@
 #pragma once
 
+static const wchar_t* kQrcodeViewClickRefreshMessage = L"qrcode_click_refresh";
 class QREncode;
 class QrcodeUI;
 class QrcodeView
@@ -17,15 +18,17 @@ public:
 
     void ShowLoading();
     void SetQrcodeUrl(std_str_r_ref url);
-    void ShowExpire();
+    void ShowExpire(const wchar_t* info);
 
 protected:
     void Init() override;
     CControlUI* CreateControl(LPCTSTR pstrClass) override;
+    bool OnNotifyBtnRefresh(void* param);
 
 private:
     CTabLayoutUI* tab_ = nullptr;
     QrcodeUI* ctrl_qrcode_ = nullptr;
+    CControlUI* ctrl_expire_info_ = nullptr;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

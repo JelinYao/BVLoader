@@ -53,7 +53,7 @@ protected:
     void OnTaskGetInfo(LPARAM lParam);
     void OnTaskGetPlayerUrl(LPARAM lParam);
     void OnTaskGetSelectPlayerUrl(LPARAM lParam);
-    void OnTaskDownloadCover(LPARAM lParam);
+    void OnTaskDownloadImage(LPARAM lParam);
 
 private:
     CEditUI* url_edit_ = nullptr;

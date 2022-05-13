@@ -8,7 +8,7 @@ class WndLogin
     , public IAsyncServiceDelegate
 {
 public:
-    WndLogin();
+    WndLogin(HWND main_wnd);
     ~WndLogin();
 
 protected:
@@ -20,6 +20,7 @@ protected:
     CControlUI* CreateControl(LPCTSTR pstrClass) override;
     LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
     LRESULT OnTimer(WPARAM wParam, LPARAM lParam) override;
+    bool OnNotifyQrcodeView(void* param);
     void StartLoginTimer();
     void StopLoginTimer();
 
@@ -36,4 +37,5 @@ protected:
 private:
     QrcodeView* qrcode_view_ = nullptr;
     std_str auth_key_;
+    HWND main_wnd_ = NULL;
 };

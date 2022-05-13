@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Window size="700,500" caption="0,0,0,40">
+<Window size="702,502" caption="0,0,0,41">
     <Font name="微软雅黑" size="12" bold="false" id="0"/>
     <Font name="微软雅黑" size="12" bold="true" id="1"/>
     <Font name="微软雅黑" size="14" bold="false" id="2"/>
@@ -8,8 +8,11 @@
     
     <VerticalLayout bkcolor="#FFFFFFFF" bordersize="1" bordercolor="#FFE1E1E1" inset="1,1,1,1">
         <HorizontalLayout height="40" bkimage="bk_title.png">
-            <Label text="视频下载工具" float="true" pos="20,10,0,0" width="100" textcolor="#FFFFFFFF" height="16" font="2" align="left" valign="center"/>
-            <Button name="btn_download" float="true" pos="600,0,0,0" width="32" height="32" bkimage="download.png"/>
+            <Control float="true" pos="8,6,0,0" width="28" height="28" bkimage="public/logo.png"/>
+            <Label text="B站视频下载工具" float="true" pos="40,10,0,0" width="200" textcolor="#FFFFFFFF" height="16" font="2" align="left" valign="center"/>
+            <Button name="btn_user" float="true" pos="560,6,0,0" width="28" height="28" bkimage="def_icon.png" cursor="hand" tooltip="登录"/>
+            <Control float="true" pos="560,6,0,0" width="28" height="28" bkimage="icon_mask.png" mouse="false"/>
+            <Button name="btn_download" float="true" pos="600,6,0,0" width="28" height="28" bkimage="download.png" cursor="hand" tooltip="新建下载"/>
             <Button name="btn_close" float="true" pos="669,0,0,0" width="31" height="29" normalimage="file='close.png' source='0,0,31,29' " hotimage="file='close.png' source='0,29,31,58'" pushedimage="close.png' source='0,58,31,87'" cursor="hand"/>
         </HorizontalLayout>
         <HorizontalLayout >
