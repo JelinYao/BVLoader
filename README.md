@@ -18,6 +18,9 @@ mp3lame: https://lame.sourceforge.io/
 jsoncpp: https://github.com/open-source-parsers/jsoncpp  
 restclient: https://github.com/mrtazz/restclient-cpp  
 ## 更新记录  
+### 2022年5月21日 -- 1.2.0
++ 1.支持自动登录。  
++ 2.UI调整，添加窗口阴影。  
 ### 2022年5月13日 -- 1.1.0  
 + 1.增加二维码登录功能，支持下载高清视频。  
 + 2.UI调整。  

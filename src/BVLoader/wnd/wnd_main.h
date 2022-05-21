@@ -75,6 +75,30 @@ protected:
     LRESULT OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam);
     LRESULT OnMsgAsyncError(WPARAM wParam, LPARAM lParam);
 
+    class CookieMgr {
+    public:
+        CookieMgr(HWND wnd);
+        ~CookieMgr();
+        void SetCookie(std_cstr_ref cookie) { 
+            cookie_ = cookie;
+            Save();
+        }
+        void SetCookie(std_str_r_ref cookie) { 
+            cookie_ = std::move(cookie);
+            Save();
+        }
+        std_cstr_ref GetCookie() const { return cookie_; }
+        void SetMainWnd(HWND wnd) { main_wnd_ = wnd; }
+
+    protected:
+        void Read();
+        void Save();
+
+    private:
+        HWND main_wnd_ = NULL;
+        std_str cookie_;
+    };
+
 private:
     bool user_login_ = false;
     bool need_exit_ = false;
@@ -89,5 +113,6 @@ private:
     CListUI* list_finish_ = nullptr;
     CControlUI* btn_user_ = nullptr;
     std::unordered_map<UINT_PTR, CContainerUI*> map_loading_items_;
+    std::unique_ptr<CookieMgr> cookie_mgr_;
 };
 

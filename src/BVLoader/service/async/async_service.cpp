@@ -116,6 +116,11 @@ void AsyncService::AddDownloadImageTask(ImageType image_type, std_cstr_ref url)
     task_event_.notify_one();
 }
 
+void AsyncService::SetCookie(std_cstr_ref cookie)
+{
+    user_cookie_ = cookie;
+}
+
 void AsyncService::ThreadProc(void* param)
 {
     RestClient::init();
@@ -468,6 +473,7 @@ bool AsyncService::ParseLoginInfo(const std::shared_ptr<IAsyncTask>& task, std_c
         auto& data = root[kHttpResponseData];
         int code = 0;
         std_str url;
+        std_str cookie;
         if (data.isInt()) {
             code = data.asInt();
         }
@@ -482,15 +488,15 @@ bool AsyncService::ParseLoginInfo(const std::shared_ptr<IAsyncTask>& task, std_c
             string_utils::SplitStringA(url, "&", param_list);
             size_t count = param_list.size();
             for (size_t i = 0; i < count; ++i) {
-                user_cookie_ += param_list[i];
+                cookie += param_list[i];
                 if (i != count - 1) {
-                    user_cookie_.append("; ");
+                    cookie.append("; ");
                 }
             }
         }
         // 解析完毕，回调通知界面
         if (!IsDelegateEmpty()) {
-            QrcodeLoginInfo* login_info = new QrcodeLoginInfo(code, std::move(url));
+            QrcodeLoginInfo* login_info = new QrcodeLoginInfo(code, std::move(url), std::move(cookie));
             NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_SUCCESS, login_info);
         }
         return true;

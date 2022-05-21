@@ -20,6 +20,7 @@ public:
     virtual void AddDecodeTask(UINT_PTR task_id, std_cwstr_ref video_path, std_cwstr_ref mp3_path) = 0;
     virtual void AddLoginTask(std_cstr_ref url, std_cstr_ref auth_key) = 0;
     virtual void AddDownloadImageTask(ImageType image_type, std_cstr_ref url) = 0;
+    virtual void SetCookie(std_cstr_ref cookie) = 0;
 };
 
 // 下载服务对外能力接口

@@ -135,7 +135,8 @@ LRESULT WndLogin::OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam)
         {
         case 0: {
             // µÇÂ½³É¹¦
-            ::PostMessage(main_wnd_, WM_MAINWND_LOGIN_SUCCESS, 0, 0);
+            std_str* cookie = new std_str(std::move(info->cookie));
+            ::PostMessage(main_wnd_, WM_MAINWND_LOGIN_SUCCESS, 0, (LPARAM)cookie);
             Close();
             break;
         }

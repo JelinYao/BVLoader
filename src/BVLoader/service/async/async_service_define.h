@@ -97,13 +97,15 @@ public:
 // 登录状态信息
 class QrcodeLoginInfo {
 public:
-    QrcodeLoginInfo(int _code, std_str_r_ref _url)
+    QrcodeLoginInfo(int _code, std_str_r_ref _url, std_str_r_ref _cookie)
         : code(_code)
-        , url(std::move(_url)) {
+        , url(std::move(_url))
+        , cookie(std::move(_cookie)) {
     }
 
     int code = 0;
     std_str url;
+    std_str cookie;
 };
 
 // 用户信息

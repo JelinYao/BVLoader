@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Window size="702,502" caption="0,0,0,41">
+<Window size="700,500" caption="0,0,0,41" showshadow="true" shadowdarkness="17" shadowsize="6" shadowposition="0,3">
     <Font name="微软雅黑" size="12" bold="false" id="0"/>
     <Font name="微软雅黑" size="12" bold="true" id="1"/>
     <Font name="微软雅黑" size="14" bold="false" id="2"/>
     <Font name="微软雅黑" size="14" bold="true" id="3"/>
     <Default name="VScrollBar" value="showbutton1=&quot;false&quot; showbutton2=&quot;false&quot; thumbnormalimage=&quot;file=&apos;public/scroll.png&apos; source=&apos;0,0,6,7&apos; corner=&apos;2,2,2,2&apos;&quot;  railnormalimage=&quot;file=&apos;public/scroll.png&apos; source=&apos;0,0,6,7&apos; corner=&apos;2,2,2,2&apos;&quot; bknormalimage=&quot;file=&apos;public/scroll.png&apos; source=&apos;0,7,6,14&apos; corner=&apos;2,2,2,2&apos;&quot; width=&quot;6&quot; "/>
     
-    <VerticalLayout bkcolor="#FFFFFFFF" bordersize="1" bordercolor="#FFE1E1E1" inset="1,1,1,1">
+    <VerticalLayout bkcolor="#FFFFFFFF">
         <HorizontalLayout height="40" bkimage="bk_title.png">
             <Control float="true" pos="8,6,0,0" width="28" height="28" bkimage="public/logo.png"/>
             <Label text="B站视频下载工具" float="true" pos="40,10,0,0" width="200" textcolor="#FFFFFFFF" height="16" font="2" align="left" valign="center"/>

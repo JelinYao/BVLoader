@@ -30,6 +30,7 @@ void WndMain::InitWindow()
     DOWNLOAD_SERVICE()->AddDelegate(this, nullptr);
     AUDIO_SERVICE()->AddDelegate(this, nullptr);
     ASYNC_SERVICE()->AddDelegate(this, nullptr);
+    cookie_mgr_ = std::make_unique<CookieMgr>(m_hWnd);
 }
 
 void WndMain::OnFinalMessage(HWND hWnd)
@@ -497,6 +498,12 @@ LRESULT WndMain::OnMsgShowWnd(WPARAM wParam, LPARAM lParam)
 
 LRESULT WndMain::OnMsgLoginSuccess(WPARAM wParam, LPARAM lParam)
 {
+    // user cookie
+    std_str* cookie = reinterpret_cast<std_str*>(lParam);
+    assert(cookie);
+    std::unique_ptr<std_str> auto_cookie(cookie);
+    ASYNC_SERVICE()->SetCookie(*cookie);
+    cookie_mgr_->SetCookie(std::move(*cookie));
     // 获取用户信息
     btn_user_->SetEnabled(false);
     ASYNC_SERVICE()->AddHttpTask(AsyncTaskType::TASK_GET_USER_INFO, kRequestUserInfo);
@@ -526,5 +533,49 @@ LRESULT WndMain::OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam)
 
 LRESULT WndMain::OnMsgAsyncError(WPARAM wParam, LPARAM lParam)
 {
+    AsyncTaskType task_type = static_cast<AsyncTaskType>(wParam);
+    if (task_type == AsyncTaskType::TASK_GET_USER_INFO) {
+        btn_user_->SetEnabled(true);
+        // 获取用户信息失败，清空cookie
+        std_str cookie;
+        ASYNC_SERVICE()->SetCookie(cookie);
+        cookie_mgr_->SetCookie(cookie);
+    }
     return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+static const constexpr char* kConfigFileName = "config.ini";
+WndMain::CookieMgr::CookieMgr(HWND wnd)
+    : main_wnd_(wnd)
+{
+    Read();
+}
+
+WndMain::CookieMgr::~CookieMgr()
+{
+}
+
+void WndMain::CookieMgr::Read()
+{
+    char buffer[256] = { 0 };
+    char file[MAX_PATH + 1] = { 0 };
+    system_utils::GetExePathA(file, MAX_PATH);
+    strcat_s(file, kConfigFileName);
+    if (::GetPrivateProfileStringA("user", "cookie", "", buffer, 256, file) > 0) {
+        cookie_.assign(buffer);
+    }
+    if (!cookie_.empty()) {
+        // 自动登录
+        std_str* cookie = new std_str(std::move(cookie_));
+        ::PostMessage(main_wnd_, WM_MAINWND_LOGIN_SUCCESS, 0, (LPARAM)cookie);
+    }
+}
+
+void WndMain::CookieMgr::Save()
+{
+    char file[MAX_PATH + 1] = { 0 };
+    system_utils::GetExePathA(file, MAX_PATH);
+    strcat_s(file, kConfigFileName);
+    ::WritePrivateProfileStringA("user", "cookie", cookie_.c_str(), file);
 }

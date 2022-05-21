@@ -46,6 +46,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     ServiceManager::Instance()->Exit();
     ::CloseHandle(mutex);
     LOG(INFO) << "Application exit";
+#ifdef _DEBUG
+    _CrtDumpMemoryLeaks();
+#endif
     return 0;
 }
 

@@ -6,6 +6,8 @@
 *.lo
 *.o
 *.obj
+*.exp
+*.user
 
 # Precompiled Headers
 *.gch
@@ -29,6 +31,8 @@
 *.exe
 *.out
 *.app
+*.flv
+*.mp3
 
 *.dy
 *.pdb
