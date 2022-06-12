@@ -50,4 +50,18 @@ namespace string_utils {
     void StrTrim(std::string& str);
 
     std::string GetFileNameByUrl(const std::string& url);
+
+    std::string GetFileExtentionNameByUrl(const std::string& url);
+
+    // 去掉Windows文件命名不能包含的特殊字符：\/:*?"<>|
+    template<class T>
+    T TrimFileName(T ch)
+    {
+        if ((ch == '\\') || (ch == '/') || (ch == ':') || (ch == '*')
+            || (ch == '?') || (ch == '"') || (ch == '<') || (ch == '>') || (ch == '|')) {
+            return '#';
+        }
+        return ch;
+    }
+
 }

@@ -251,18 +251,25 @@ namespace download {
     }
 
     std::shared_ptr<Task> DownloadService::AddTask(std_cstr_ref url, std_cwstr_ref title, std_cwstr_ref img,
-        std_cwstr_ref author, int duration, __int64 ctime)
+        std_cwstr_ref author, int duration, __int64 ctime, std_cwstr_ref name/* = L""*/)
     {
         auto task = task_mgr_->NewTask(url, title, img, author, duration, ctime);
-        auto name = string_utils::GetFileNameByUrl(url);
-        if (name.empty()) {
-            LOG(ERROR) << "AddTask 获取下载文件名失败，url: " << url;
-            task_mgr_->FreeTask(std::move(task));
-            return nullptr;
+        std::wstring save_name = name;
+        if (save_name.empty()) {
+            auto file_name = string_utils::GetFileNameByUrl(url);
+            if (file_name.empty()) {
+                LOG(ERROR) << "AddTask 获取下载文件名失败，url: " << url;
+                task_mgr_->FreeTask(std::move(task));
+                return nullptr;
+            }
+            save_name = string_utils::Utf8ToU(file_name);
         }
-        auto file_name = string_utils::Utf8ToU(name);
-        task->save_path = download_path_ + file_name;
-        task->audio_path = audio_path_ + file_name + L".mp3";
+        else {
+            save_name += string_utils::Utf8ToU(string_utils::GetFileExtentionNameByUrl(url));
+        }
+        
+        task->save_path = download_path_ + save_name;
+        task->audio_path = audio_path_ + save_name + L".mp3";
         task_mgr_->AddLoadigTask(task);
         NotifyStatus(task);
         StartTask(task);

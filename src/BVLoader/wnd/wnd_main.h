@@ -74,6 +74,7 @@ protected:
     LRESULT OnMsgLoginSuccess(WPARAM wParam, LPARAM lParam);
     LRESULT OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam);
     LRESULT OnMsgAsyncError(WPARAM wParam, LPARAM lParam);
+    LRESULT OnMsgClipboardUpdate(WPARAM wParam, LPARAM lParam);
 
     class CookieMgr {
     public:
@@ -104,7 +105,7 @@ private:
     bool need_exit_ = false;
     HWND hwnd_parse_ = NULL;
     HWND hwnd_login_ = NULL;
-    std::unique_ptr<WndBase> wnd_parse_;
+    std::shared_ptr<WndBase> wnd_parse_;
     std::unique_ptr<WndBase> wnd_login_;
     CTabLayoutUI* tab_main_ = nullptr;
     COptionUI* opt_selall_loading = nullptr;
@@ -114,5 +115,6 @@ private:
     CControlUI* btn_user_ = nullptr;
     std::unordered_map<UINT_PTR, CContainerUI*> map_loading_items_;
     std::unique_ptr<CookieMgr> cookie_mgr_;
+    DWORD clipboard_sn_ = 0;
 };
 

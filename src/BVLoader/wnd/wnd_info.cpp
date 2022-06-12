@@ -15,6 +15,13 @@ WndInfo::~WndInfo()
 {
 }
 
+void WndInfo::SetUrl(std_cwstr_ref url)
+{
+    if (url_edit_) {
+        url_edit_->SetText(url.c_str());
+    }
+}
+
 LPCWSTR WndInfo::GetWndName() const
 {
     return kWndParseTitle;
@@ -213,7 +220,13 @@ void WndInfo::OnTaskGetSelectPlayerUrl(LPARAM lParam)
     main_tab_->SelectItem(PAGE_START);
     combobox_->RemoveAll();
     auto service = DOWNLOAD_SERVICE();
-    service->AddTask(info->url, video_info_->title, image_path_, video_info_->author, video_info_->duration, video_info_->ctime);
+
+    std_wstr save_name;
+    if (!video_info_->title.empty()) {
+        save_name = video_info_->title;
+        std::transform(save_name.begin(), save_name.end(), save_name.begin(), string_utils::TrimFileName<wchar_t>);
+    }
+    service->AddTask(info->url, video_info_->title, image_path_, video_info_->author, video_info_->duration, video_info_->ctime, save_name);
     url_edit_->SetText(L"");
     cover_->SetBkImage(kDefaultCover);
     ShowWindow(false, false);

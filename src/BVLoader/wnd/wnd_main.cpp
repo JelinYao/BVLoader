@@ -7,6 +7,7 @@
 #include "wnd_msg.h"
 #include "wnd_login.h"
 #include "api_define.h"
+#include "url_parse.h"
 
 using namespace download;
 WndMain::WndMain()
@@ -31,6 +32,8 @@ void WndMain::InitWindow()
     AUDIO_SERVICE()->AddDelegate(this, nullptr);
     ASYNC_SERVICE()->AddDelegate(this, nullptr);
     cookie_mgr_ = std::make_unique<CookieMgr>(m_hWnd);
+    // ¼àÌý¼ôÌù°å
+    AddClipboardFormatListener(m_hWnd);
 }
 
 void WndMain::OnFinalMessage(HWND hWnd)
@@ -47,6 +50,7 @@ bool WndMain::QuitOnSysClose()
 void WndMain::Close(UINT nRet /*= IDOK*/)
 {
     need_exit_ = true;
+    RemoveClipboardFormatListener(m_hWnd);
     ASYNC_SERVICE()->RemoveDelegate(this);
     if (::IsWindow(hwnd_parse_)) {
         ::SendMessage(hwnd_parse_, WM_CLOSE, 0, 0);
@@ -77,6 +81,8 @@ LRESULT WndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
         return OnMsgAsyncSuccess(wParam, lParam);
     case WM_MAINWND_ASYNC_ERROR:
         return OnMsgAsyncError(wParam, lParam);
+    case WM_CLIPBOARDUPDATE:
+        return OnMsgClipboardUpdate(wParam, lParam);
     default:
         break;
     }
@@ -387,8 +393,9 @@ void WndMain::ShowLogin()
 
 void WndMain::ShowDownload()
 {
+    system_utils::ActiveWindow(m_hWnd);
     if (!wnd_parse_) {
-        wnd_parse_ = std::make_unique<WndInfo>();
+        wnd_parse_ = std::make_shared<WndInfo>();
         hwnd_parse_ = wnd_parse_->Create(m_hWnd);
     }
     wnd_parse_->CenterWindow();
@@ -541,6 +548,43 @@ LRESULT WndMain::OnMsgAsyncError(WPARAM wParam, LPARAM lParam)
         ASYNC_SERVICE()->SetCookie(cookie);
         cookie_mgr_->SetCookie(cookie);
     }
+    return 0;
+}
+
+LRESULT WndMain::OnMsgClipboardUpdate(WPARAM wParam, LPARAM lParam)
+{
+    auto sn = GetClipboardSequenceNumber();
+    if (sn == clipboard_sn_) {
+        return 0;
+    }
+    clipboard_sn_ = sn;
+    // »ñÈ¡¼ôÌù°åÄÚÈÝ
+    if (!::IsClipboardFormatAvailable(CF_UNICODETEXT)) {
+        LOG(INFO) << "¼ôÌù°åÄÚÈÝ²»ÊÇÎÄ×Ö";
+        return -1;
+    }
+    if (!::OpenClipboard(NULL)) {
+        LOG(ERROR) << "´ò¿ª¼ôÌù°åÊ§°Ü£¬´íÎóÂë£º" << ::GetLastError();
+        return -1;
+    }
+    HANDLE clipboard_data = ::GetClipboardData(CF_UNICODETEXT);
+    if (clipboard_data == NULL) {
+        ::CloseClipboard();
+        return -1;
+    }
+    wchar_t* clipboard_text = reinterpret_cast<wchar_t*>(::GlobalLock(clipboard_data));
+    if (clipboard_text == nullptr || 
+        (wcsstr(clipboard_text, L"www.bilibili.com") == NULL)) {
+        ::CloseClipboard();
+        return -1;
+    }
+    auto text = string_utils::UToA(clipboard_text);
+    if (IsAvailableUrl(text)) {
+        ShowDownload();
+        auto wnd = dynamic_pointer_cast<WndInfo>(wnd_parse_);
+        wnd->SetUrl(clipboard_text);
+    }
+    ::CloseClipboard();
     return 0;
 }
 

@@ -18,6 +18,9 @@ mp3lame: https://lame.sourceforge.io/
 jsoncpp: https://github.com/open-source-parsers/jsoncpp  
 restclient: https://github.com/mrtazz/restclient-cpp  
 ## 更新记录  
+### 2022年6月12日 -- 1.3.0
++ 1.监控剪贴板，支持赋值后直接打开下载窗口。  
++ 2.修改下载文件命名规则。  
 ### 2022年5月21日 -- 1.2.0
 + 1.支持自动登录。  
 + 2.UI调整，添加窗口阴影。  

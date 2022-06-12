@@ -15,6 +15,7 @@ class WndInfo
 public:
     WndInfo();
     ~WndInfo();
+    void SetUrl(std_cwstr_ref url);
 
 protected:
     LPCWSTR GetWndName()const override;

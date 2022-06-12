@@ -103,4 +103,15 @@ namespace system_utils {
         return std::wstring(path);
     }
 
+    void ActiveWindow(HWND hWnd)
+    {
+        ::ShowWindow(hWnd, SW_SHOWNORMAL);
+        ::SetActiveWindow(hWnd);
+        ::SetFocus(hWnd);
+        ::SetForegroundWindow(hWnd);
+
+        ::SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        ::SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    }
+
 }// namespace system_utils

@@ -47,3 +47,15 @@ std_str BuildPlayerUrl(VideoType type, __int64 aid, __int64 cid, int qn/* = 0*/)
     }
     return url;
 }
+
+bool IsAvailableUrl(std_cstr_ref url)
+{
+    std::smatch m;
+    if (std::regex_search(url, m, std::regex(kUgcRegexString))) {
+        if (m.size() != 2) {
+            return false;
+        }
+        return true;
+    }
+    return false;
+}

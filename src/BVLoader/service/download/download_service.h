@@ -17,7 +17,7 @@ namespace download {
 
         void AddDelegate(download::IDownloadServiceDelegate* delegate, void* param) override;
         std::shared_ptr<Task> AddTask(std_cstr_ref url, std_cwstr_ref title, std_cwstr_ref img,
-            std_cwstr_ref author, int duration, __int64 ctime) override;
+            std_cwstr_ref author, int duration, __int64 ctime, std_cwstr_ref name = L"") override;
         bool StopTask(UINT_PTR task_id) override;
         bool ReloadTask(UINT_PTR task_id) override;
         bool DeleteLoadingTask(UINT_PTR task_id) override;

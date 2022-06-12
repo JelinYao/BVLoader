@@ -8,7 +8,7 @@ static constexpr const wchar_t* kAppVersion = L"1.0.1";
 static constexpr const wchar_t* kAppName = L"DownloadTools";
 static constexpr const char* kAppNameAscii = "DownloadTools";
 
-static constexpr const wchar_t* kWndParseTitle = L"视频信息";
+static constexpr const wchar_t* kWndParseTitle = L"新建下载";
 static constexpr const wchar_t* kWndMsgTitle = L"提示窗口";
 static constexpr const wchar_t* kWndLoginTitle = L"登录";
 

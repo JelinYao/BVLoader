@@ -17,5 +17,7 @@ namespace system_utils {
 
     std::wstring GetAppTempPathW(const wchar_t* app_name);
 
+    void ActiveWindow(HWND hWnd);
+
 }// namespace system_utils
 

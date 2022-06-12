@@ -361,7 +361,7 @@ namespace string_utils {
     std::string GetFileNameByUrl(const std::string& url)
     {
         std::string name;
-        int pos = url.find("?");
+        size_t pos = url.find("?");
         if (pos != std::string::npos) {
             name = url.substr(0, pos);
         }
@@ -370,6 +370,27 @@ namespace string_utils {
             name = name.substr(pos + 1);
         }
         return name;
+    }
+    
+    std::string GetFileExtentionNameByUrl(const std::string& url)
+    {
+        auto name = GetFileNameByUrl(url);
+        if (name.empty()) {
+            return "";
+        }
+        size_t pos = name.rfind('.');
+        if (pos != std::string::npos) {
+            return name.substr(pos);
+        }
+        return "";
+    }
+
+    char TrimFileNameA(char ch) {
+        if ((ch == '\\') || (ch == '/') || (ch == ':' )|| (ch == '*')
+            || (ch == '?') || (ch == '<') || (ch == '>') || (ch == '|')) {
+            return '#';
+        }
+        return ch;
     }
 
 }// namespace string_utils

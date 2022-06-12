@@ -32,7 +32,7 @@ class IDownloadService
 public:
     virtual void AddDelegate(download::IDownloadServiceDelegate* delegate, void* param) = 0;
     virtual std::shared_ptr<download::Task> AddTask(std_cstr_ref url, std_cwstr_ref title, std_cwstr_ref img, 
-        std_cwstr_ref author, int duration, __int64 ctime) = 0;
+        std_cwstr_ref author, int duration, __int64 ctime, std_cwstr_ref name = L"") = 0;
     virtual bool StopTask(UINT_PTR task_id) = 0;
     virtual bool ReloadTask(UINT_PTR task_id) = 0;
     virtual bool DeleteLoadingTask(UINT_PTR task_id) = 0;
