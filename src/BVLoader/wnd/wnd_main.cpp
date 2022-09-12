@@ -275,6 +275,9 @@ void WndMain::OnClick(TNotifyUI& msg)
             ::PostMessage(m_hWnd, WM_MAINWND_SHOWWND, (WPARAM)WPARAM_SHOW_LOGIN, 0);
         }
     }
+    else if (name.Compare(L"btn_explorer") == 0) {
+        ::PostMessage(m_hWnd, WM_MAINWND_SHOWWND, (WPARAM)WPARAM_EXPLORER, 0);
+    }
 }
 
 bool WndMain::AddLoadingItem(const shared_ptr<download::Task>& task)
@@ -402,6 +405,12 @@ void WndMain::ShowDownload()
     wnd_parse_->ShowWindow();
 }
 
+void WndMain::OpenDownloadPath()
+{
+     auto& path = DOWNLOAD_SERVICE()->GetDownloadPath();
+     ::ShellExecute(NULL, L"open", path.c_str(), NULL, NULL, SW_SHOW);
+}
+
 UINT WndMain::ShowMsgBox(MessageIconType icon, LPCWSTR info)
 {
     WndMsg* wnd = new WndMsg(icon, info);
@@ -496,6 +505,9 @@ LRESULT WndMain::OnMsgShowWnd(WPARAM wParam, LPARAM lParam)
         break;
     case WPARAM_SHOW_DOWNLOAD:
         ShowDownload();
+        break;
+    case WPARAM_EXPLORER:
+        OpenDownloadPath();
         break;
     default:
         break;

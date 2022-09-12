@@ -25,6 +25,7 @@ namespace download {
         std::shared_ptr<download::Task> FindLoadingTask(UINT_PTR task_id) override;
         std::shared_ptr<download::Task> FindFinishTask(UINT_PTR task_id) override;
         bool AddFinishTask(UINT_PTR task_id) override;
+        std_cwstr_ref GetDownloadPath() const override;
 
     protected:
         bool Init() override;

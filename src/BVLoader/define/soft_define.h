@@ -4,7 +4,7 @@ static constexpr const wchar_t* kAppWindowClassName = L"GuiFoundationClass";
 static constexpr const wchar_t* kAppWindowTitle = L"B站视频下载工具";
 static constexpr const wchar_t* kAppInstanceMutex = L"{E33E6D86-55E3-496B-B961-A205582F84EC}";
 static constexpr const wchar_t* kAppExeName = L"BVLoader.exe";
-static constexpr const wchar_t* kAppVersion = L"1.0.1";
+static constexpr const wchar_t* kAppVersion = L"1.4.0";
 static constexpr const wchar_t* kAppName = L"DownloadTools";
 static constexpr const char* kAppNameAscii = "DownloadTools";
 

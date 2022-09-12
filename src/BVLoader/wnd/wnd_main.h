@@ -64,6 +64,7 @@ protected:
     bool OnNotifyListItem(void* param);
     void ShowLogin();
     void ShowDownload();
+    void OpenDownloadPath();
 
     UINT ShowMsgBox(MessageIconType icon, LPCWSTR info);
     LRESULT OnMsgMsgbox(WPARAM wParam, LPARAM lParam);

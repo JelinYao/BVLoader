@@ -18,6 +18,8 @@ mp3lame: https://lame.sourceforge.io/
 jsoncpp: https://github.com/open-source-parsers/jsoncpp  
 restclient: https://github.com/mrtazz/restclient-cpp  
 ## 更新记录  
+### 2022年9月12日 -- 1.4.0
++ 1.增加打开下载文件夹功能。
 ### 2022年6月12日 -- 1.3.0
 + 1.监控剪贴板，支持赋值后直接打开下载窗口。  
 + 2.修改下载文件命名规则。  

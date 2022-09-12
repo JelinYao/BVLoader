@@ -351,5 +351,10 @@ namespace download {
         return true;
     }
 
+    std_cwstr_ref DownloadService::GetDownloadPath() const
+    {
+        return download_path_;
+    }
+
 } // namespace download
 

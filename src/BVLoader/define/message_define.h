@@ -33,6 +33,7 @@ enum MsgboxWparam {
 enum ShowwndWparam {
     WPARAM_SHOW_LOGIN,
     WPARAM_SHOW_DOWNLOAD,
+    WPARAM_EXPLORER,
 };
 
 // qrcode window message

@@ -40,6 +40,7 @@ public:
     virtual std::shared_ptr<download::Task> FindLoadingTask(UINT_PTR task_id) = 0;
     virtual std::shared_ptr<download::Task> FindFinishTask(UINT_PTR task_id) = 0;
     virtual bool AddFinishTask(UINT_PTR task_id) = 0;
+    virtual std_cwstr_ref GetDownloadPath() const = 0;
 };
 
 // 解码服务对外能力接口
