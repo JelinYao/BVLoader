@@ -56,15 +56,17 @@ class DecodeTask
     : public IAsyncTask 
 {
 public:
-    DecodeTask(UINT_PTR id, std_cwstr_ref video, std_cwstr_ref mp3)
+    DecodeTask(UINT_PTR id, std_cwstr_ref video, std_cwstr_ref mp3, std_cwstr_ref img)
         : IAsyncTask(AsyncTaskType::TASK_DECODE_VIDEO)
         , task_id(id)
         , video_path(video)
-        , mp3_path(mp3) {
+        , mp3_path(mp3)
+        , img_path(img) {
     }
 
     std_wstr video_path;
     std_wstr mp3_path;
+    std_wstr img_path;
     UINT_PTR task_id = 0;
 };
 

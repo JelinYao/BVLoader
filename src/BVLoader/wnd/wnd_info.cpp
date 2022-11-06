@@ -202,6 +202,7 @@ void WndInfo::OnTaskGetPlayerUrl(LPARAM lParam)
     assert(info);
     std::unique_ptr<PlayerInfo> auto_ptr(info);
     player_info_.swap(auto_ptr);
+    combobox_->RemoveAll();
     for (auto& qn : info->qn) {
         CListLabelElementUI* elem = new CListLabelElementUI;
         elem->SetText(string_utils::Utf8ToU(qn.desc).c_str());

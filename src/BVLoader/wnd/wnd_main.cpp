@@ -154,7 +154,7 @@ void WndMain::NotifyStatus(const std::shared_ptr<download::Task>& task, void* pa
         btn_size->SetText(string_utils::SecondsToString(task->duration).c_str());
         // ½âÂë
         task->status = download::DownloadStatus::STATUS_DECODE;
-        ASYNC_SERVICE()->AddDecodeTask(task_id, task->save_path, task->audio_path);
+        ASYNC_SERVICE()->AddDecodeTask(task_id, task->save_path, task->audio_path, task->img);
         ::PostMessage(m_hWnd, WM_MAINWND_NOTIFY_STATUS, (WPARAM)task_id, (LPARAM)param);
         break;
     }

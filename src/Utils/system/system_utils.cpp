@@ -65,7 +65,7 @@ namespace system_utils {
     {
         HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
         if (INVALID_HANDLE_VALUE == hSnapshot) {
-            return NULL;
+            return 0;
         }
         PROCESSENTRY32 pe = { sizeof(PROCESSENTRY32) };
         BOOL bFlag = ::Process32First(hSnapshot, &pe);
@@ -112,6 +112,109 @@ namespace system_utils {
 
         ::SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         ::SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    }
+
+    BOOL GetFileContentA(const char* file, OUT std::string& content)
+    {
+        BOOL result = FALSE;
+        HANDLE hFile = ::CreateFileA(file, GENERIC_READ, FILE_SHARE_READ, NULL, 
+            OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (hFile == INVALID_HANDLE_VALUE) {
+            return result;
+        }
+        LARGE_INTEGER largeSize = { 0 };
+        ::GetFileSizeEx(hFile, &largeSize);
+        DWORD dwSize = (DWORD)largeSize.QuadPart;
+        unsigned char* buffer = (unsigned char*)malloc(dwSize);
+        if (buffer == NULL) {
+            return result;
+        }
+        DWORD dwReadSize = 0;
+        ::ReadFile(hFile, buffer, dwSize, &dwReadSize, NULL);
+        if (dwSize == dwReadSize) {
+            content.assign((char*)buffer, dwSize);
+            result = TRUE;
+        }
+        free(buffer);
+        ::CloseHandle(hFile);
+        return result;
+    }
+
+    BOOL GetFileContentW(const wchar_t* file, OUT std::string& content)
+    {
+        BOOL result = FALSE;
+        HANDLE hFile = ::CreateFileW(file, GENERIC_READ, FILE_SHARE_READ, NULL,
+            OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (hFile == INVALID_HANDLE_VALUE) {
+            return result;
+        }
+        LARGE_INTEGER largeSize = { 0 };
+        ::GetFileSizeEx(hFile, &largeSize);
+        DWORD dwSize = (DWORD)largeSize.QuadPart;
+        unsigned char* buffer = (unsigned char*)malloc(dwSize);
+        if (buffer == NULL) {
+            return result;
+        }
+        DWORD dwReadSize = 0;
+        ::ReadFile(hFile, buffer, dwSize, &dwReadSize, NULL);
+        if (dwSize == dwReadSize) {
+            content.assign((char*)buffer, dwSize);
+            result = TRUE;
+        }
+        free(buffer);
+        ::CloseHandle(hFile);
+        return result;
+    }
+
+    BOOL StretchImage(unsigned char* src, int width, int height, 
+        int destWidth, int destHeight, unsigned char** ppdestBits)
+    {
+        byte* buffer = (byte*)malloc(destWidth * destHeight * 4);
+        if (buffer == NULL) {
+            return FALSE;
+        }
+        double horFactor = double(width) / destWidth;  //水平缩放因子
+        double verFactor = double(height) / destHeight; //垂直缩放因子
+
+        double w0, w1, w2, w3; // weight
+        int x1, y1, x2, y2; // (x1, y1), (x2, y2)
+        double fx1, fx2, fy1, fy2;
+
+        for (int i = 0; i < destHeight; i++)
+        {
+            double x0 = i * verFactor;
+            x1 = int(i * verFactor);
+            x2 = x1 + 1;
+
+            fx1 = x2 - x0;
+            fx2 = x0 - x1;
+            for (int j = 0; j < destWidth; j++)
+            {
+                double y0 = j * horFactor;
+                y1 = int(j * horFactor);
+                y2 = y1 + 1;
+
+                fy1 = y2 - y0;
+                fy2 = y0 - y1;
+
+                // 计算权值
+                w0 = fx1 * fy1;
+                w1 = fx1 * fy2;
+                w2 = fx2 * fy1;
+                w3 = fx2 * fy2;
+
+                int dstOffset = (i * destWidth + j) * 4;
+                int srcOffset1 = (x1 * width + y1) * 4;
+                int srcOffset2 = (x2 * width + y1) * 4;
+
+                buffer[dstOffset + 0] = w0 * src[srcOffset1] + w1 * src[srcOffset1 + 4] + w2 * src[srcOffset2] + w3 * src[srcOffset2 + 4];     //B
+                buffer[dstOffset + 1] = w0 * src[srcOffset1 + 1] + w1 * src[srcOffset1 + 5] + w2 * src[srcOffset2 + 1] + w3 * src[srcOffset2 + 5]; //G
+                buffer[dstOffset + 2] = w0 * src[srcOffset1 + 2] + w1 * src[srcOffset1 + 6] + w2 * src[srcOffset2 + 2] + w3 * src[srcOffset2 + 6]; //R
+                buffer[dstOffset + 3] = 0xff;
+            }
+        }
+        *ppdestBits = buffer;
+        return TRUE;
     }
 
 }// namespace system_utils

@@ -18,6 +18,10 @@ mp3lame: https://lame.sourceforge.io/
 jsoncpp: https://github.com/open-source-parsers/jsoncpp  
 restclient: https://github.com/mrtazz/restclient-cpp  
 ## 更新记录  
+### 2022年11月6日 -- 1.5.0 
++ 1.引入开源库sqlite3、turbojpeg。 
++ 2.支持写入mp3封面图片。 
++ 3.解决下载信息窗口码率下拉列表显示的bug。
 ### 2022年9月12日 -- 1.4.0
 + 1.增加打开下载文件夹功能。
 ### 2022年6月12日 -- 1.3.0

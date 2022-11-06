@@ -19,7 +19,7 @@ extern "C"
 #include "lame/lame.h"
 #include "soft_define.h"
 #include "audio_service_delegate.h"
-#pragma comment(lib, "libmp3lame.lib")
+#include <libjpegturbo/turbojpeg.h>
 
 // 1 second of 48khz 32bit audio
 static constexpr int kMaxAudioFrameSize = 192000;
@@ -48,9 +48,15 @@ void AudioService::AddDelegate(IAudioServiceDelegate* delegate, void* param)
     param_ = param;
 }
 
-void AudioService::Decode(UINT_PTR task_id, std_cwstr_ref video_path, std_cwstr_ref mp3_path)
+void AudioService::Decode(UINT_PTR task_id, std_cwstr_ref video_path, 
+    std_cwstr_ref mp3_path, std_cwstr_ref img_path)
 {
     DecodeErrorCode code = DecodeErrorCode::ERROR_SUCCESS;
+    tjhandle decodeHandle = NULL;
+    unsigned char* decodeBuffer = NULL;
+    unsigned char* stretchBuffer = NULL;
+    unsigned char* encodeBuffer = NULL;
+    unsigned long encodeSize = 0;
     while (true) {
         // video to pcm
         auto ascii_video_path = string_utils::UToA(video_path);
@@ -68,14 +74,64 @@ void AudioService::Decode(UINT_PTR task_id, std_cwstr_ref video_path, std_cwstr_
             code = DecodeErrorCode::ERROR_DECODE_VIDEO;
             break;
         }
+        // 压缩图片
+        while (true) {
+            if (img_path.empty()) {
+                break;
+            }
+            std_str content;
+            if (!system_utils::GetFileContentW(img_path.c_str(), content)) {
+                break;
+            }
+            decodeHandle = tjInitDecompress();
+            int width = 0, height = 0, subsample = 0, colorspace = 0;
+            int result = tjDecompressHeader3(decodeHandle, (const unsigned char*)content.c_str(), content.size(),
+                &width, &height, &subsample, &colorspace);
+            if (result < 0) {
+                break;
+            }
+            if (width <= 500 && height <= 600) {
+                break;
+            }
+            // BGRA  jpg解码
+            decodeBuffer = (unsigned char*)malloc(width * height * 4);
+            result = tjDecompress2(decodeHandle, (const unsigned char*)content.c_str(), content.size(),
+                decodeBuffer, width, 0, height, TJPF_BGRA, TJFLAG_ACCURATEDCT);
+            if (result != 0) {
+                break;
+            }
+            // 压缩图片尺寸
+            int destWidth = 500;
+            int destHeight = destWidth * height / width;
+            if (!system_utils::StretchImage(decodeBuffer, width, height,
+                destWidth, destHeight, &stretchBuffer)) {
+                break;
+            }
+            // jpg编码
+            result = EncodeJpeg(stretchBuffer, destWidth, destHeight, &encodeBuffer, &encodeSize);
+            break;
+        }
+        if (decodeHandle) {
+            tjDestroy(decodeHandle);
+        }
+        if (decodeBuffer) {
+            free(decodeBuffer);
+        }
+        if (stretchBuffer) {
+            free(stretchBuffer);
+        }
         // pcm to mp3
         auto ascii_mp3_path = string_utils::UToA(mp3_path);
-        if (PcmToMp3(pcm_path.c_str(), ascii_mp3_path.c_str(), samples_rate, 2, 128) != 0) {
+        if (PcmToMp3(pcm_path.c_str(), ascii_mp3_path.c_str(), samples_rate, 2, 
+            128, (const char*)encodeBuffer, encodeSize) != 0) {
             LOG(ERROR) << "VideoToMp3 PcmToMp3 failed";
             code = DecodeErrorCode::ERROR_ENCODE_MP3;
             break;
         }
         break;
+    }
+    if (encodeBuffer) {
+        free(encodeBuffer);
     }
     if (delegate_) {
         delegate_->OnDecodeComplete(task_id, code, param_);
@@ -171,7 +227,8 @@ int AudioService::MpegExportPcm(const char* video_path, const char* pcm_file, in
     return 0;
 }
 
-int AudioService::PcmToMp3(const char* pcm_file, const char* mp3_file, int samples_rate, int channels, int brate)
+int AudioService::PcmToMp3(const char* pcm_file, const char* mp3_file, int samples_rate, 
+    int channels, int brate, const char* imgBuffer, size_t imgSize)
 {
     FILE* fp_pcm = NULL;
     fopen_s(&fp_pcm, pcm_file, "rb");
@@ -189,7 +246,7 @@ int AudioService::PcmToMp3(const char* pcm_file, const char* mp3_file, int sampl
     // 初始化编码信息
     lame_global_flags* lame = lame_init();
     lame_set_out_samplerate(lame, samples_rate);
-    lame_set_in_samplerate(lame, samples_rate);	// 设置输出音频的采样频率(48000Hz)
+    lame_set_in_samplerate(lame, samples_rate); // 设置输出音频的采样频率(48000Hz)
     lame_set_num_channels(lame, channels); // 设置输出音频的声道数
     lame_set_brate(lame, brate); // 设置输出音频的比特率
     // 音频大小 = (比特率*1024/8.0)*(时长:秒)
@@ -198,8 +255,15 @@ int AudioService::PcmToMp3(const char* pcm_file, const char* mp3_file, int sampl
     id3tag_add_v2(lame);
     id3tag_space_v1(lame);
     id3tag_pad_v2(lame);
+    // 设置歌曲信息
+    if (imgBuffer && imgSize > 0) {
+        id3tag_set_albumart(lame, imgBuffer, imgSize);
+    }
     // 获取MP3文件头大小
-    size_t id3_size = lame_get_id3v2_tag(lame, NULL, 0);
+    // size_t id3_size = lame_get_id3v2_tag(lame, NULL, 0);
+    size_t tag_size = 1024 * 1024;
+    unsigned char* tag_buffer = (unsigned char*)malloc(tag_size);
+    size_t id3_size = lame_get_id3v2_tag(lame, tag_buffer, tag_size);
     lame_init_params(lame);
     const int buffer_size = 8192, mp3_buffer_size = buffer_size + id3_size * 2;
     unsigned char* mp3_buffer = (unsigned char*)malloc(mp3_buffer_size);
@@ -223,10 +287,29 @@ int AudioService::PcmToMp3(const char* pcm_file, const char* mp3_file, int sampl
             break;
         }
     }
+    free(tag_buffer);
     free(pcm_buffer);
     free(mp3_buffer);
     fclose(fp_mp3);
     fclose(fp_pcm);
     lame_close(lame);
+    return 0;
+}
+
+int AudioService::EncodeJpeg(unsigned char* src, int width, int height,
+    OUT unsigned char** ppJpegBuf, OUT unsigned long* jpegSize)
+{
+    tjhandle handle = tjInitCompress();
+    int pixelFormat = TJPF_BGRA;
+    int result = tjCompress2(handle, src, width, 0, height, pixelFormat,
+        ppJpegBuf, jpegSize, TJSAMP_420, 60, TJFLAG_ACCURATEDCT);
+    if (result < 0) {
+        char* error = tjGetErrorStr2(handle);
+        *ppJpegBuf = NULL;
+        *jpegSize = 0;
+        tjDestroy(handle);
+        return -1;
+    }
+    tjDestroy(handle);
     return 0;
 }

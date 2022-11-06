@@ -94,7 +94,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../include;../../include/restclient;../../include/utils;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../include;../../include/restclient;../../include/utils;../../include/sqlite3;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -113,7 +113,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../include;../../include/restclient;../../include/utils;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../include;../../include/restclient;../../include/utils;../../include/sqlite3;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -163,6 +163,8 @@
     <ClInclude Include="..\..\include\restclient\connection.h" />
     <ClInclude Include="..\..\include\restclient\helpers.h" />
     <ClInclude Include="..\..\include\restclient\restclient.h" />
+    <ClInclude Include="..\..\include\sqlite3\CppSQLite3.h" />
+    <ClInclude Include="..\..\include\sqlite3\sqlite3.h" />
     <ClInclude Include="..\..\include\utils\easylogging++.h" />
     <ClInclude Include="..\..\include\utils\HttpLib.h" />
     <ClInclude Include="..\..\include\utils\qrencode.h" />
@@ -212,6 +214,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="restclient\restclient.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="sqlite3\CppSQLite3.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>

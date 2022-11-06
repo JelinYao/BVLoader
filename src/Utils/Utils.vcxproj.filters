@@ -37,6 +37,9 @@
     <Filter Include="httplib">
       <UniqueIdentifier>{2c21db54-fa12-4ea9-8fa4-f05e37a0b368}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sqlite3">
+      <UniqueIdentifier>{6d4a692b-0294-4b5a-a1b9-39deff71f115}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -78,6 +81,12 @@
     <ClInclude Include="..\..\include\utils\ThreadMgr.h">
       <Filter>httplib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\sqlite3\CppSQLite3.h">
+      <Filter>sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\sqlite3\sqlite3.h">
+      <Filter>sqlite3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="restclient\connection.cc">
@@ -112,6 +121,9 @@
     </ClCompile>
     <ClCompile Include="httplib\ThreadMgr.cpp">
       <Filter>httplib</Filter>
+    </ClCompile>
+    <ClCompile Include="sqlite3\CppSQLite3.cpp">
+      <Filter>sqlite3</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

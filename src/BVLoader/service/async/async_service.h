@@ -22,7 +22,8 @@ public:
     void RemoveDelegate(IAsyncServiceDelegate* delegate) override;
     void AddHttpTask(AsyncTaskType task_type, std_cstr_ref url) override;
     void AddVideoTask(AsyncTaskType task_type, VideoType video_type, std_cstr_ref url) override;
-    void AddDecodeTask(UINT_PTR task_id, std_cwstr_ref video_path, std_cwstr_ref mp3_path) override;
+    void AddDecodeTask(UINT_PTR task_id, std_cwstr_ref video_path, 
+        std_cwstr_ref mp3_path, std_cwstr_ref img_path) override;
     void AddLoginTask(std_cstr_ref url, std_cstr_ref auth_key) override;
     void AddDownloadImageTask(ImageType image_type, std_cstr_ref url) override;
     void SetCookie(std_cstr_ref cookie) override;

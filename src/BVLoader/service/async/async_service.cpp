@@ -83,14 +83,15 @@ void AsyncService::AddVideoTask(AsyncTaskType task_type, VideoType video_type, s
     task_event_.notify_one();
 }
 
-void AsyncService::AddDecodeTask(UINT_PTR task_id, std_cwstr_ref video_path, std_cwstr_ref mp3_path)
+void AsyncService::AddDecodeTask(UINT_PTR task_id, std_cwstr_ref video_path, 
+    std_cwstr_ref mp3_path, std_cwstr_ref img_path)
 {
     if (video_path.empty() || mp3_path.empty()) {
         LOG(ERROR) << "AddDecodeTask invalid params";
         return;
     }
     std::lock_guard<std::mutex> lock(task_mutex_);
-    task_list_.emplace_back(std::make_shared<DecodeTask>(task_id, video_path, mp3_path));
+    task_list_.emplace_back(std::make_shared<DecodeTask>(task_id, video_path, mp3_path, img_path));
     task_event_.notify_one();
 }
 
@@ -249,7 +250,8 @@ void AsyncService::OnDecodeVideo(const std::shared_ptr<IAsyncTask>& task)
         return;
     }
     // 在线程中同步解码视频
-    AUDIO_SERVICE()->Decode(decode_task->task_id, decode_task->video_path, decode_task->mp3_path);
+    AUDIO_SERVICE()->Decode(decode_task->task_id, decode_task->video_path, 
+        decode_task->mp3_path, decode_task->img_path);
 }
 
 void AsyncService::OnGetLoginUrl(const std::shared_ptr<IAsyncTask>& task)
