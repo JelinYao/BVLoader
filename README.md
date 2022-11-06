@@ -17,6 +17,8 @@ ffmpeg: http://ffmpeg.org/
 mp3lame: https://lame.sourceforge.io/  
 jsoncpp: https://github.com/open-source-parsers/jsoncpp  
 restclient: https://github.com/mrtazz/restclient-cpp  
+libjpeg-turbo: https://libjpeg-turbo.org/ 
+sqlite: https://www.sqlite.org/index.html 
 ## 更新记录  
 ### 2022年11月6日 -- 1.5.0 
 + 1.引入开源库sqlite3、turbojpeg。 
