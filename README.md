@@ -20,6 +20,9 @@ restclient: https://github.com/mrtazz/restclient-cpp
 libjpeg-turbo: https://libjpeg-turbo.org/   
 sqlite: https://www.sqlite.org/index.html   
 ## 更新记录  
+### 2024年2月25日 -- 1.6.0 
++ 1.更新B站登录API，解决无法登录的问题。 
++ 2.更新B站用户信息API，解决登陆后请求用户信息失败的问题。 
 ### 2022年11月6日 -- 1.5.0 
 + 1.引入开源库sqlite3、turbojpeg。 
 + 2.支持写入mp3封面图片。 

@@ -40,6 +40,9 @@ enum ShowwndWparam {
 enum {
     WM_QRCODEWND_ASYNC_SUCCESS = kBaseWindowMessage + 1,
     WM_QRCODEWND_ASYNC_ERROR,
+
+    WM_QRCODEWND_GET_QRCODE,
+    WM_QRCODEWND_GET_LOGIN_RESULT,
 };
 
 // qrcode window timer

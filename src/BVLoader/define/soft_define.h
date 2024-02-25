@@ -23,6 +23,7 @@ static constexpr const wchar_t* kTextDecoding = L"解码中";
 // qrcode login
 static constexpr const wchar_t* kTextQrcodeExpired = L"二维码已过期";
 static constexpr const wchar_t* kTextQrcodeRequestFailed = L"二维码请求失败";
+static constexpr const wchar_t* kTextQrcodeResultParseFailed = L"二维码扫码结果解析失败";
 static constexpr const wchar_t* kTextQrcodeConfirmed = L"扫描成功，请在手机上确认";
 
 static constexpr const wchar_t* kDefaultCover = L"cover.png";

@@ -85,6 +85,8 @@ public:
 // 登录二维码url信息
 class QrcodeUrlInfo {
 public:
+    QrcodeUrlInfo() = default;
+
     QrcodeUrlInfo(std_str_r_ref _url, std_str_r_ref _key)
         : url(std::move(_url))
         , auth_key(std::move(_key)) {
@@ -97,6 +99,8 @@ public:
 // 登录状态信息
 class QrcodeLoginInfo {
 public:
+    QrcodeLoginInfo() = default;
+
     QrcodeLoginInfo(int _code, std_str_r_ref _url, std_str_r_ref _cookie)
         : code(_code)
         , url(std::move(_url))
@@ -106,6 +110,7 @@ public:
     int code = 0;
     std_str url;
     std_str cookie;
+    std_str msg;
 };
 
 // 用户信息

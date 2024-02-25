@@ -261,9 +261,12 @@ void AsyncService::OnGetLoginUrl(const std::shared_ptr<IAsyncTask>& task)
         return;
     }
     // 数据解析
-    bool result = ParseLoginUrl(task, response);
-    if (!result && !IsDelegateEmpty()) {
-        NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_PARSE_RESPONSE, nullptr);
+    QrcodeUrlInfo* info = new QrcodeUrlInfo();
+    bool result = ParseLoginUrl(task, response, info);
+    // 解析完毕，回调通知界面
+    if (!IsDelegateEmpty()) {
+        auto code = result ? AsyncErrorCode::ERROR_SUCCESS : AsyncErrorCode::ERROR_PARSE_RESPONSE;
+        NotifyDelegate(task->task_type, code, info);
     }
 }
 
@@ -276,9 +279,9 @@ void AsyncService::OnGetLoginInfo(const std::shared_ptr<IAsyncTask>& task)
     }
     RestClient::Connection http;
     InitHttp(http);
-    std_str param("oauthKey=");
-    param += login_task->auth_key;
-    auto response = http.post(login_task->url, param);
+    std::string url = login_task->url + 
+        login_task->auth_key + "&source=main-fe-header";
+    auto response = http.get(url);
     if (response.curl_code != CURLE_OK) {
         LOG(ERROR) << "DoHttpRequest network error, code: " << response.curl_code;
         if (!IsDelegateEmpty()) {
@@ -287,9 +290,12 @@ void AsyncService::OnGetLoginInfo(const std::shared_ptr<IAsyncTask>& task)
         return;
     }
     // 数据解析
-    bool result = ParseLoginInfo(task, response.body);
-    if (!result && !IsDelegateEmpty()) {
-        NotifyDelegate(login_task->task_type, AsyncErrorCode::ERROR_PARSE_RESPONSE, nullptr);
+    QrcodeLoginInfo* info = new QrcodeLoginInfo();
+    bool result = ParseLoginInfo(task, response.body, info);
+    // 解析完毕，回调通知界面
+    if (!IsDelegateEmpty()) {
+        auto code = result ? AsyncErrorCode::ERROR_SUCCESS : AsyncErrorCode::ERROR_PARSE_RESPONSE;
+        NotifyDelegate(task->task_type, code, info);
     }
 }
 
@@ -430,9 +436,11 @@ bool AsyncService::ParseUgcPlayerUrl(const std::shared_ptr<IAsyncTask>& task, st
     return false;
 }
 
-bool AsyncService::ParseLoginUrl(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response)
+bool AsyncService::ParseLoginUrl(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response, QrcodeUrlInfo* info)
 {
+    // {"code":0,"message":"0","ttl":1,"data":{"url":"https://passport.bilibili.com/h5-app/passport/login/scan?navhide=1\u0026qrcode_key=8a7373d74db2c69108e6de6fc5bdf491\u0026from=main-fe-header","qrcode_key":"8a7373d74db2c69108e6de6fc5bdf491"}}
     try {
+        assert(info);
         Json::Value root;
         Json::CharReaderBuilder builder;
         std::shared_ptr<Json::CharReader> rd(builder.newCharReader());
@@ -447,13 +455,9 @@ bool AsyncService::ParseLoginUrl(const std::shared_ptr<IAsyncTask>& task, std_cs
             return false;
         }
         auto& data = root[kHttpResponseData];
-        auto url = data["url"].asString();
-        auto auth_key = data["oauthKey"].asString();
-        // 解析完毕，回调通知界面
-        if (!IsDelegateEmpty()) {
-            QrcodeUrlInfo* userData = new QrcodeUrlInfo(std::move(url), std::move(auth_key));
-            NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_SUCCESS, userData);
-        }
+        info->url = data["url"].asString();
+        info->auth_key = data["qrcode_key"].asString();
+        return true;
     }
     catch (...) {
         LOG(ERROR) << "ParseLoginUrl parse json failed";
@@ -461,9 +465,14 @@ bool AsyncService::ParseLoginUrl(const std::shared_ptr<IAsyncTask>& task, std_cs
     return false;
 }
 
-bool AsyncService::ParseLoginInfo(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response)
+bool AsyncService::ParseLoginInfo(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response, 
+    QrcodeLoginInfo* info)
 {
     try {
+        assert(info);
+        // {"code":20000,"message":"该版本已不支持当前功能，请升级新版本！"}
+        // {"code":0,"message":"0","ttl":1,"data":{"url":"","refresh_token":"","timestamp":0,"code":86038,"message":"二维码已失效"}}
+
         Json::Value root;
         Json::CharReaderBuilder builder;
         std::shared_ptr<Json::CharReader> rd(builder.newCharReader());
@@ -473,15 +482,19 @@ bool AsyncService::ParseLoginInfo(const std::shared_ptr<IAsyncTask>& task, std_c
             return false;
         }
         auto& data = root[kHttpResponseData];
-        int code = 0;
-        std_str url;
-        std_str cookie;
-        if (data.isInt()) {
-            code = data.asInt();
+        if (!data.isObject()) {
+            LOG(ERROR) << "接口返回数据出错：" << string_utils::Utf8ToA(response);
+            return false;
         }
-        else {
-            // 登陆成功，解析用户信息
-            url = data["url"].asString();
+
+        info->url = data["url"].asString();
+        info->code = data["code"].asInt();
+        info->msg = data["message"].asString();
+
+        std_str url;
+        // 登陆成功，解析用户信息
+        url = data["url"].asString();
+        if (!url.empty()) {
             size_t pos = url.find('?');
             if (pos != std::string::npos) {
                 url = url.substr(pos + 1);
@@ -490,16 +503,11 @@ bool AsyncService::ParseLoginInfo(const std::shared_ptr<IAsyncTask>& task, std_c
             string_utils::SplitStringA(url, "&", param_list);
             size_t count = param_list.size();
             for (size_t i = 0; i < count; ++i) {
-                cookie += param_list[i];
+                info->cookie += param_list[i];
                 if (i != count - 1) {
-                    cookie.append("; ");
+                    info->cookie.append("; ");
                 }
             }
-        }
-        // 解析完毕，回调通知界面
-        if (!IsDelegateEmpty()) {
-            QrcodeLoginInfo* login_info = new QrcodeLoginInfo(code, std::move(url), std::move(cookie));
-            NotifyDelegate(task->task_type, AsyncErrorCode::ERROR_SUCCESS, login_info);
         }
         return true;
     }

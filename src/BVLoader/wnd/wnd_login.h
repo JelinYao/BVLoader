@@ -34,6 +34,9 @@ protected:
     LRESULT OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam);
     LRESULT OnMsgAsyncError(WPARAM wParam, LPARAM lParam);
 
+    LRESULT OnMsgGetQrcode(WPARAM wParam, LPARAM lParam);
+    LRESULT OnMsgGetLoginResult(WPARAM wParam, LPARAM lParam);
+
 private:
     QrcodeView* qrcode_view_ = nullptr;
     std_str auth_key_;

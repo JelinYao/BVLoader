@@ -61,6 +61,10 @@ LRESULT WndLogin::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
         return OnMsgAsyncSuccess(wParam, lParam);
     case WM_QRCODEWND_ASYNC_ERROR:
         return OnMsgAsyncError(wParam, lParam);
+    case WM_QRCODEWND_GET_QRCODE:
+        return OnMsgGetQrcode(wParam, lParam);
+    case WM_QRCODEWND_GET_LOGIN_RESULT:
+        return OnMsgGetLoginResult(wParam, lParam);
     default:
         break;
     }
@@ -104,12 +108,26 @@ void WndLogin::RefreshQrcode()
 
 void WndLogin::OnAsyncComplete(AsyncTaskType task_type, AsyncErrorCode code, void* data, void* param)
 {
-    if (task_type == AsyncTaskType::TASK_GET_LOGIN_URL
-        || task_type == AsyncTaskType::TASK_GET_LOGIN_INFO) {
-        // 往UI线程转发
-        UINT msg = (code == AsyncErrorCode::ERROR_SUCCESS) ? WM_QRCODEWND_ASYNC_SUCCESS : WM_QRCODEWND_ASYNC_ERROR;
-        ::PostMessage(m_hWnd, msg, (WPARAM)task_type, (LPARAM)data);
+    // 往UI线程转发
+    switch (task_type) {
+    case AsyncTaskType::TASK_GET_LOGIN_URL: {
+        ::PostMessage(m_hWnd, WM_QRCODEWND_GET_QRCODE, (WPARAM)code, (LPARAM)data);
+        break;
     }
+    case AsyncTaskType::TASK_GET_LOGIN_INFO: {
+        ::PostMessage(m_hWnd, WM_QRCODEWND_GET_LOGIN_RESULT, (WPARAM)code, (LPARAM)data);
+        break;
+    }
+    default:
+        break;
+    }
+
+    //if (task_type == AsyncTaskType::TASK_GET_LOGIN_URL
+    //    || task_type == AsyncTaskType::TASK_GET_LOGIN_INFO) {
+    //    // 往UI线程转发
+    //    UINT msg = (code == AsyncErrorCode::ERROR_SUCCESS) ? WM_QRCODEWND_ASYNC_SUCCESS : WM_QRCODEWND_ASYNC_ERROR;
+    //    ::PostMessage(m_hWnd, msg, (WPARAM)task_type, (LPARAM)data);
+    //}
 }
 
 LRESULT WndLogin::OnMsgAsyncSuccess(WPARAM wParam, LPARAM lParam)
@@ -179,5 +197,63 @@ LRESULT WndLogin::OnMsgAsyncError(WPARAM wParam, LPARAM lParam)
     default:
         break;
     }
+    return 0;
+}
+
+LRESULT WndLogin::OnMsgGetQrcode(WPARAM wParam, LPARAM lParam)
+{
+    AsyncErrorCode code = (AsyncErrorCode)wParam;
+    auto info = reinterpret_cast<QrcodeUrlInfo*>(lParam);
+    assert(info);
+    std::unique_ptr<QrcodeUrlInfo> auto_ptr(info);
+    if (code == AsyncErrorCode::ERROR_SUCCESS) {
+        // 获取登录二维码成功
+        qrcode_view_->SetQrcodeUrl(std::move(info->url));
+        auth_key_ = std::move(info->auth_key);
+        // 开启定时器
+        StartLoginTimer();
+    }
+    else {
+        qrcode_view_->ShowExpire(kTextQrcodeRequestFailed);
+    }
+    return 0;
+}
+
+LRESULT WndLogin::OnMsgGetLoginResult(WPARAM wParam, LPARAM lParam)
+{
+    AsyncErrorCode code = (AsyncErrorCode)wParam;
+    auto info = reinterpret_cast<QrcodeLoginInfo*>(lParam);
+    assert(info);
+    std::unique_ptr<QrcodeLoginInfo> auto_ptr(info);
+    if (code == AsyncErrorCode::ERROR_SUCCESS) {
+        // 成功
+        switch (info->code)
+        {
+        case 0: {
+            // 登陆成功
+            std_str* cookie = new std_str(std::move(info->cookie));
+            ::PostMessage(main_wnd_, WM_MAINWND_LOGIN_SUCCESS, 0, (LPARAM)cookie);
+            Close();
+            break;
+        }
+        case 86038: // 二维码已失效
+            qrcode_view_->ShowExpire(kTextQrcodeExpired);
+            break;
+        case 86101: // 未扫码
+            StartLoginTimer();
+            break;
+        case 86090: // 二维码已扫码未确认
+            qrcode_view_->ShowExpire(kTextQrcodeConfirmed);
+            StartLoginTimer();
+            break;
+        default:
+            break;
+        }
+    }
+    else {
+        // 失败
+        qrcode_view_->ShowExpire(kTextQrcodeResultParseFailed);
+    }
+
     return 0;
 }

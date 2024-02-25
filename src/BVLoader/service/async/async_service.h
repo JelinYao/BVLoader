@@ -47,8 +47,10 @@ protected:
     // Êý¾Ý½âÎö
     bool ParseUgcInfo(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response);
     bool ParseUgcPlayerUrl(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response);
-    bool ParseLoginUrl(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response);
-    bool ParseLoginInfo(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response);
+    bool ParseLoginUrl(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response, 
+        QrcodeUrlInfo* info);
+    bool ParseLoginInfo(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response, 
+        QrcodeLoginInfo* info);
     bool ParseUserInfo(const std::shared_ptr<IAsyncTask>& task, std_cstr_ref response);
 
     void NotifyDelegate(AsyncTaskType task_type, AsyncErrorCode code, void* data);

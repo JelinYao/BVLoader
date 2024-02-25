@@ -351,10 +351,10 @@ namespace string_utils {
     void StrTrim(std::string& s)
     {
         s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-            return !std::isspace(ch);
+            return !isspace(ch);
             }));
         s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-            return !std::isspace(ch);
+            return !isspace(ch);
             }).base(), s.end());
     }
 
@@ -385,12 +385,28 @@ namespace string_utils {
         return "";
     }
 
-    char TrimFileNameA(char ch) {
-        if ((ch == '\\') || (ch == '/') || (ch == ':' )|| (ch == '*')
-            || (ch == '?') || (ch == '<') || (ch == '>') || (ch == '|')) {
-            return '#';
+    std::map<std::wstring, std::wstring> CommandLineToArgMap(const wchar_t* command)
+    {
+        std::map<std::wstring, std::wstring> argMap;
+        int argCount = 0;
+        LPWSTR* cmdArray = ::CommandLineToArgvW(command, &argCount);
+        if (cmdArray == nullptr || argCount == 0) {
+            return argMap;
         }
-        return ch;
+        for (int i = 0; i < argCount; ++i) {
+            std::wstring arg(cmdArray[i]);
+            auto pos = arg.find('=');
+            if (pos == std::wstring::npos) {
+                continue;
+            }
+            std::wstring key = arg.substr(0, pos);
+            std::wstring value = arg.substr(pos + 1);
+            while (!key.empty() && key[0] == '-') {
+                key.erase(key.begin());
+            }
+            argMap.emplace(std::move(key), std::move(value));
+        }
+        return argMap;
     }
 
 }// namespace string_utils

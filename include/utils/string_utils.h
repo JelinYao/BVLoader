@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <map>
+
 using std::string;
 using std::wstring;
 using std::vector;
@@ -52,6 +54,8 @@ namespace string_utils {
     std::string GetFileNameByUrl(const std::string& url);
 
     std::string GetFileExtentionNameByUrl(const std::string& url);
+
+    std::map<std::wstring, std::wstring> CommandLineToArgMap(const wchar_t* command);
 
     // 去掉Windows文件命名不能包含的特殊字符：\/:*?"<>|
     template<class T>

@@ -23,6 +23,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         LOG(INFO) << "Process is already running, exit";
         return 0;
     }
+
     CPaintManagerUI::SetInstance(hInstance);
 #ifdef _DEBUG
     CDuiString wstrResoucePath = CPaintManagerUI::GetInstancePath();
